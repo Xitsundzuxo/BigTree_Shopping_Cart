@@ -31,7 +31,45 @@
 <main class="px-4 pt-4">
   <h1 class="text-xl font-semibold mb-4">Create a grocery list that you'll user at your convenience.</h1>
 
-  <!-- Your existing grocery list UI goes here -->
+  <!-- Grocery List -->
+<div class="bg-white/10 backdrop-blur-md rounded-xl p-4 space-y-4">
+
+  <!-- Currency Selector -->
+  <div>
+    <label class="text-sm font-semibold">Currency</label>
+    <select id="currencySelect"
+      class="w-full mt-1 p-2 rounded bg-black/40 border border-white/20">
+      <option value="ZAR">Rand (ZAR)</option>
+      <option value="USD">US Dollar (USD)</option>
+      <option value="EUR">Euro (EUR)</option>
+      <option value="GBP">Pound (GBP)</option>
+    </select>
+  </div>
+
+  <!-- Add Item -->
+  <input id="itemName"
+    class="w-full p-2 rounded bg-black/40 border border-white/20"
+    placeholder="Item name">
+
+  <input id="itemPrice" type="number"
+    class="w-full p-2 rounded bg-black/40 border border-white/20"
+    placeholder="Price">
+
+  <button onclick="addItem()"
+    class="w-full bg-green-600 hover:bg-green-700 transition rounded p-2 font-semibold">
+    Add Item
+  </button>
+
+  <!-- List -->
+  <ul id="groceryList" class="space-y-2"></ul>
+
+  <!-- Clear -->
+  <button onclick="clearList()"
+    class="w-full bg-red-600 hover:bg-red-700 transition rounded p-2 font-semibold">
+    Clear List
+  </button>
+
+</div>
 </main>
 
 <script>
@@ -72,3 +110,4 @@ const menuPanel = document.getElementById('menuPanel');
 
 </body>
 </html>
+
