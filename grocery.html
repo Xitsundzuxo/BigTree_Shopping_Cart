@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Grocery List</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-gray-900 to-black min-h-screen text-white">
+
+<!-- Header -->
+<header class="flex items-center justify-between px-4 py-3">
+  <div class="flex items-center space-x-2">
+    <img src="BigTree_logo.png" class="w-8 h-8" alt="App Logo">
+    <span class="font-semibold text-lg">BigTree Shopping Cart App</span>
+  </div>
+
+  <button onclick="toggleMenu(event)" class="text-2xl">☰</button>
+</header>
+
+<!-- Menu -->
+<div id="menuPanel" class="hidden px-4 pb-4">
+  <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 space-y-3">
+    <a href="index.html" class="block hover:text-gray-300">Home</a>
+    <a href="about.html" class="block hover:text-gray-300">About Us</a>
+    <a href="terms.html" class="block hover:text-gray-300">Terms & Conditions</a>
+    <a href="tutor.html" class="block hover:text-gray-300">Tutorials</a>
+  </div>
+</div>
+
+<!-- Content -->
+<main class="px-4 pt-4">
+  <h1 class="text-xl font-semibold mb-4">Create a grocery list that you'll user at your convenience.</h1>
+
+  <!-- Your existing grocery list UI goes here -->
+</main>
+
+<script>
+  function toggleMenu() {
+    document.getElementById('menuPanel').classList.toggle('hidden');
+  }
+
+const menuPanel = document.getElementById('menuPanel');
+  const menuButton = document.getElementById('menuButton');
+
+  // Build menu
+  menuLinks.forEach(link => {
+    const a = document.createElement('a');
+    a.href = link.href;
+    a.textContent = link.label;
+    a.className = 'block text-white hover:text-gray-300 transition';
+    menuPanel.appendChild(a);
+  });
+
+  function toggleMenu(e) {
+    e.stopPropagation();
+    menuPanel.classList.toggle('hidden');
+  }
+
+  // Close menu when clicking outside
+  document.addEventListener('click', (e) => {
+    if (
+      !menuPanel.contains(e.target) &&
+      !menuButton.contains(e.target)
+    ) {
+      menuPanel.classList.add('hidden');
+    }
+  });
+</script>
+
+</script>
+  
+
+</body>
+</html>

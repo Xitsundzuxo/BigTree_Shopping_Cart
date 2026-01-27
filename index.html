@@ -1,0 +1,1093 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BigTree Shopping Cart</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    body {
+      box-sizing: border-box;
+      font-family: 'Space Grotesk', sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+    .slide-in {
+      animation: slideIn 0.3s ease-out;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    .fade-in {
+      animation: fadeIn 0.2s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .cart-badge {
+      animation: pop 0.3s ease-out;
+    }
+    @keyframes pop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+      100% { transform: scale(1); }
+    }
+
+
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+ 
+  </head>
+ <body>
+
+
+  <div id="app" class="min-h-screen w-full overflow-auto" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);"><!-- Main Shopping View -->
+   <div id="main-view" class="min-h-screen p-4 md:p-6"><!-- Header -->
+    <div class="mb-6">
+     <div class="flex items-center gap-3 mb-3"><img src="BigTree_logo.png" alt="BigTree Logo" loading="lazy" class="w-12 h-12 object-contain" onerror="console.error('Image failed to load:', this.src); this.style.display='none'; this.alt='Logo unavailable';">
+      <h1 id="app-title" class="text-2xl md:text-3xl font-bold text-white underline">BigTree Shopping Cart</h1>
+     
+<header class="flex items-center justify-between px-4 py-3 gap-4">
+
+  <!-- LEFT: Menu Icon -->
+  <div class="relative">
+    <button
+      id="menuButton"
+      onclick="toggleMenu(event)"
+      class="text-white text-2xl focus:outline-none"
+    >
+      ☰
+    </button>
+
+    <!-- Menu Panel (opens LEFT of icon) -->
+    <div
+      id="menuPanel"
+      class="hidden absolute right-full top-0 mr-3 w-56 bg-white/10 backdrop-blur-md rounded-xl p-4 space-y-3 z-50"
+    >
+      <!-- Menu links go here (page-specific) -->
+      
+
+
+    </div>
+  </div>
+
+
+  <!-- RIGHT: Cart button / placeholder -->
+  <div>
+    <!-- Your existing cart button lives here -->
+  </div>
+
+</header>
+
+
+
+<!-- Slide-down Menu (NOT overlaying header) -->
+<div id="menuPanel" class="hidden px-4 pb-4">
+  <div id="menuItems" class="bg-white/10 backdrop-blur-md rounded-xl p-4 space-y-3">
+    <!-- Dynamic menu buttons injected here -->
+  </div>
+</div>
+</div>
+
+     <div class="flex gap-2 justify-end"><button id="history-btn" onclick="showHistory()" class="relative px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-medium transition-all flex items-center gap-2">
+       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+       </svg> History </button> <button id="cart-btn" onclick="showCart()" class="relative px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-medium transition-all flex items-center gap-2">
+       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+       </svg> Cart <span id="cart-badge" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-6 h-6 rounded-full flex items-center justify-center font-bold hidden">0</span> </button>
+     </div>
+    </div>
+    <!-- Quick Actions -->
+    <div class="flex gap-2 mb-4"><button onclick="showImportModal()" class="flex-1 py-3 bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/50 text-blue-300 rounded-xl font-medium transition-all flex items-center justify-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg> Import List </button> <button onclick="showPresetsModal()" class="flex-1 py-3 bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/50 text-purple-300 rounded-xl font-medium transition-all flex items-center justify-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+      </svg> Quick Add </button>
+    </div><!-- Add Item Form -->
+    <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-5 mb-6 border border-white/20">
+     <h2 class="text-lg font-semibold text-white mb-4">Add Item to Cart</h2>
+     <form id="add-item-form" onsubmit="addToCart(event)" class="space-y-4">
+      <div><label for="item-name" class="block text-sm text-gray-300 mb-1">Item Name</label>
+       <div class="relative"><input type="text" id="item-name" required placeholder="Enter item name or use voice" class="w-full px-4 py-3 pr-12 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"> <button type="button" onclick="startVoiceInput('item-name')" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-white transition-colors">
+         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+         </svg></button>
+       </div>
+      </div>
+      <div><label for="item-price" class="block text-sm text-gray-300 mb-1">Price (R)</label>
+       <div class="relative"><input type="number" id="item-price" required min="0.01" step="0.01" placeholder="0.00" class="w-full px-4 py-3 pr-12 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"> <button type="button" onclick="startVoiceInput('item-price')" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-white transition-colors">
+         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+         </svg></button>
+       </div>
+      </div>
+      <div><label for="item-quantity" class="block text-sm text-gray-300 mb-1">Quantity</label>
+       <div class="flex items-center gap-3"><button type="button" onclick="decrementQuantity()" class="w-12 h-12 bg-red-500/20 hover:bg-red-500/30 border border-red-500/50 text-red-300 rounded-xl font-bold text-xl transition-all flex items-center justify-center"> − </button> <input type="number" id="item-quantity" value="1" min="1" readonly class="flex-1 text-center px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500"> <button type="button" onclick="incrementQuantity()" class="w-12 h-12 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/50 text-emerald-300 rounded-xl font-bold text-xl transition-all flex items-center justify-center"> + </button>
+       </div>
+      </div>
+      <div class="flex gap-2"><button type="submit" class="flex-1 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-semibold transition-all transform hover:scale-[1.02]"> + Add to Cart </button> <button type="button" onclick="saveAsPreset()" class="px-4 py-3 bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/50 text-purple-300 rounded-xl transition-all">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+        </svg></button>
+      </div>
+     </form>
+    </div><!-- Current Cart Preview -->
+    <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/20">
+     <h2 class="text-lg font-semibold text-white mb-4">Current Cart</h2>
+     <div id="cart-preview" class="space-y-2 max-h-64 overflow-auto">
+      <p class="text-gray-400 text-center py-4">Your cart is empty</p>
+     </div>
+     <div id="cart-total-preview" class="hidden mt-4 pt-4 border-t border-white/20">
+      <div class="flex justify-between text-white font-semibold text-lg"><span>Total:</span> <span id="preview-total">R0.00</span>
+      </div>
+     </div>
+     </div>
+
+    <!-- Founder Credit -->
+<div class="mb-24 pt-8 text-center">
+  <p class="text-gray-400 text-sm mb-2">
+    <span class="font-semibold">Founder &amp; Developer:</span> St Crijoh Studios.
+  </p>
+
+  <img
+    src="StCrijoh_logo.png"
+    alt="St Crijoh Studios Logo"
+    class="mx-auto w-12 h-12 opacity-80 hover:opacity-100 transition-opacity"
+    loading="lazy"
+    onerror="this.style.display='none'"
+  />
+</div>
+
+   </div><!-- Cart Modal -->
+   <div id="cart-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl w-full max-w-md max-h-[90%] overflow-auto slide-in border border-white/20">
+     <div class="p-5">
+      <div class="flex items-center justify-between mb-4">
+       <h2 class="text-xl font-bold text-white">🛒 Your Cart</h2><button onclick="hideCart()" class="text-gray-400 hover:text-white p-1">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg></button>
+      </div>
+      <div id="cart-items" class="space-y-2 max-h-48 overflow-auto mb-4">
+       <p class="text-gray-400 text-center py-4">Cart is empty</p>
+      </div>
+      <div class="border-t border-white/20 pt-4 mb-4">
+       <div class="flex justify-between text-white font-bold text-xl"><span>Total:</span> <span id="cart-total">R0.00</span>
+       </div>
+      </div><!-- Payment Section -->
+      <div id="payment-section" class="hidden">
+       <h3 class="text-lg font-semibold text-white mb-3"> Payment</h3>
+       <div class="mb-3"><label for="payment-amount" class="block text-sm text-gray-300 mb-1">Amount You Have (R)</label> <input type="number" id="payment-amount" min="0" step="0.01" placeholder="Enter amount" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+       </div>
+       <div id="payment-result" class="hidden mb-4 p-4 rounded-xl"></div>
+       <div class="flex gap-2"><button onclick="calculateChange()" class="flex-1 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-semibold transition-all"> Calculate Change </button> <button id="complete-btn" onclick="completeOrder()" disabled class="flex-1 py-3 bg-emerald-500 hover:bg-emerald-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-xl font-semibold transition-all"> Save </button>
+       </div>
+      </div><button id="checkout-btn" onclick="showPayment()" class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-semibold transition-all hidden"> Proceed </button>
+     </div>
+    </div>
+   </div><!-- History Modal -->
+   <div id="history-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl w-full max-w-lg max-h-[90%] overflow-auto slide-in border border-white/20">
+     <div class="p-5">
+      <div class="flex items-center justify-between mb-4">
+       <h2 class="text-xl font-bold text-white">📋 Order History</h2><button onclick="hideHistory()" class="text-gray-400 hover:text-white p-1">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg></button>
+      </div>
+      <div id="history-list" class="space-y-3 max-h-96 overflow-auto">
+       <p class="text-gray-400 text-center py-8">No order history yet</p>
+      </div>
+     </div>
+    </div>
+   </div><!-- Import List Modal -->
+   <div id="import-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl w-full max-w-md slide-in border border-white/20">
+     <div class="p-5">
+      <div class="flex items-center justify-between mb-4">
+       <h2 class="text-xl font-bold text-white">📝 Import Shopping List</h2><button onclick="hideImportModal()" class="text-gray-400 hover:text-white p-1">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg></button>
+      </div>
+      <p class="text-gray-300 text-sm mb-3">Paste your list in these formats:</p>
+      <div class="bg-white/5 rounded-lg p-3 mb-4 text-xs font-mono text-gray-400">
+       Milk 25.50<br>
+        Bread R15<br>
+        Eggs - 30.00<br>
+        Cheese, 45
+      </div>
+      <form id="import-form" onsubmit="importList(event)"><textarea id="import-text" rows="8" placeholder="Paste your shopping list here..." class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none mb-4"></textarea>
+       <div class="flex gap-2"><button type="button" onclick="hideImportModal()" class="flex-1 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-xl font-semibold transition-all"> Cancel </button> <button type="submit" class="flex-1 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-semibold transition-all"> Import Items </button>
+       </div>
+      </form>
+     </div>
+    </div>
+   </div><!-- Presets Modal -->
+   <div id="presets-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl w-full max-w-md max-h-[90%] overflow-auto slide-in border border-white/20">
+     <div class="p-5">
+      <div class="flex items-center justify-between mb-4">
+       <h2 class="text-xl font-bold text-white">⭐ Quick Add Presets</h2><button onclick="hidePresetsModal()" class="text-gray-400 hover:text-white p-1">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg></button>
+      </div><!-- Add New Preset Form -->
+      <div class="bg-white/5 rounded-xl p-4 mb-4 border border-white/10">
+       <h3 class="text-white font-semibold mb-3">Create New Preset</h3>
+       <form id="preset-form" onsubmit="savePresetFromModal(event)" class="space-y-3">
+        <div><label for="preset-name" class="block text-sm text-gray-300 mb-1">Item Name</label> <input type="text" id="preset-name" required placeholder="e.g., Milk" class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500">
+        </div>
+        <div><label for="preset-price" class="block text-sm text-gray-300 mb-1">Price (R)</label> <input type="number" id="preset-price" required min="0.01" step="0.01" placeholder="0.00" class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500">
+        </div><button type="submit" class="w-full py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg font-semibold transition-all"> 💾 Save Preset </button>
+       </form>
+      </div><!-- Saved Presets List -->
+      <div>
+       <h3 class="text-white font-semibold mb-2">Saved Presets</h3>
+       <div id="presets-list" class="space-y-2 max-h-64 overflow-auto">
+        <p class="text-gray-400 text-center py-4 text-sm">No presets saved yet</p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div><!-- Toast Notification -->
+   <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 bg-emerald-500 text-white px-6 py-3 rounded-xl font-medium shadow-lg hidden z-50 fade-in">
+    Item added to cart!
+   </div><!-- Fixed Bottom Statement Banner -->
+   <div class="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-purple-600 via-blue-600 to-emerald-600 text-white py-3 px-4 shadow-lg z-50">
+    <p class="text-center text-sm md:text-base font-medium"><strong>BigTree Shopping Cart</strong> - Your smart shopping companion for easy checkout and order tracking</p>
+   </div>
+  </div>
+  <script>
+    
+  let currentPage = 'home'; 
+  // values: 'home', 'grocery', 'about', 'terms'
+
+    function toggleMenu() {
+    const panel = document.getElementById('menuPanel');
+    panel.classList.toggle('hidden');
+    renderMenu();
+  }
+
+  function renderMenu() {
+    const menu = document.getElementById('menuItems');
+    menu.innerHTML = '';
+
+    const pages = {
+      home: 'Home',
+      grocery: 'Grocery List',
+      about: 'About Us',
+      terms: 'Terms & Conditions'
+    };
+
+    const rules = {
+      home: ['about', 'grocery', 'terms'],
+      about: ['home', 'grocery', 'terms'],
+      grocery: ['home', 'about', 'terms'],
+      terms: ['home', 'grocery', 'about']
+    };
+
+    rules[currentPage].forEach(page => {
+      const btn = document.createElement('button');
+      btn.className = 'block w-full text-left text-white px-3 py-2 rounded-lg hover:bg-white/20 transition';
+      btn.textContent = pages[page];
+      btn.onclick = () => navigate(page);
+      menu.appendChild(btn);
+    });
+  }
+
+
+    // Cart state
+    let cart = [];
+    let orderHistory = [];
+    let currentPaymentValid = false;
+    let currentChange = 0;
+    let presets = [];
+    let recognition = null;
+
+    // Quantity controls
+    function incrementQuantity() {
+      const quantityInput = document.getElementById('item-quantity');
+      quantityInput.value = parseInt(quantityInput.value) + 1;
+    }
+
+    function decrementQuantity() {
+      const quantityInput = document.getElementById('item-quantity');
+      const currentValue = parseInt(quantityInput.value);
+      if (currentValue > 1) {
+        quantityInput.value = currentValue - 1;
+      }
+    }
+
+    // Load data from localStorage on startup
+    function loadData() {
+      const savedCart = localStorage.getItem('bigtree-cart');
+      const savedHistory = localStorage.getItem('bigtree-history');
+      const savedPresets = localStorage.getItem('bigtree-presets');
+
+      if (savedCart) {
+        try {
+          cart = JSON.parse(savedCart);
+          updateCartBadge();
+          updateCartPreview();
+        } catch (e) {
+          cart = [];
+        }
+      }
+
+      if (savedHistory) {
+        try {
+          orderHistory = JSON.parse(savedHistory);
+        } catch (e) {
+          orderHistory = [];
+        }
+      }
+
+      if (savedPresets) {
+        try {
+          presets = JSON.parse(savedPresets);
+        } catch (e) {
+          presets = [];
+        }
+      }
+    }
+
+    // Save data to localStorage
+    function saveCart() {
+      localStorage.setItem('bigtree-cart', JSON.stringify(cart));
+    }
+
+    function saveHistory() {
+      localStorage.setItem('bigtree-history', JSON.stringify(orderHistory));
+    }
+
+    function savePresets() {
+      localStorage.setItem('bigtree-presets', JSON.stringify(presets));
+    }
+
+    // Voice input
+    function startVoiceInput(fieldId) {
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        showToast('Voice input not supported in your browser');
+        return;
+      }
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      const field = document.getElementById(fieldId);
+      const button = window.event ? window.event.target.closest('button') : null;
+      
+      if (button) {
+        button.classList.add('text-red-500');
+      }
+      showToast('🎤 Listening...');
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        
+        if (fieldId === 'item-price') {
+          const numbers = transcript.match(/\d+\.?\d*/);
+          if (numbers) {
+            field.value = numbers[0];
+          }
+        } else {
+          field.value = transcript;
+        }
+        
+        if (button) {
+          button.classList.remove('text-red-500');
+        }
+        showToast('✓ Voice input captured!');
+      };
+
+      recognition.onerror = (err) => {
+        if (button) {
+          button.classList.remove('text-red-500');
+        }
+        
+        if (err.error === 'not-allowed' || err.error === 'permission-denied') {
+          showToast('Microphone permission denied');
+        } else if (err.error === 'no-speech') {
+          showToast('No speech detected. Try again.');
+        } else {
+          showToast('Voice input failed. Try typing.');
+        }
+      };
+
+      recognition.onend = () => {
+        if (button) {
+          button.classList.remove('text-red-500');
+        }
+      };
+
+      try {
+        recognition.start();
+      } catch (e) {
+        showToast('Voice input unavailable');
+        if (button) {
+          button.classList.remove('text-red-500');
+        }
+      }
+    }
+
+    // Save current form as preset
+    function saveAsPreset() {
+      const nameInput = document.getElementById('item-name');
+      const priceInput = document.getElementById('item-price');
+
+      if (!nameInput.value || !priceInput.value) {
+        showToast('Fill in both fields to save preset');
+        return;
+      }
+
+      const preset = {
+        id: Date.now().toString(),
+        name: nameInput.value.trim(),
+        price: parseFloat(priceInput.value)
+      };
+
+      presets.push(preset);
+      savePresets();
+      showToast('⭐ Preset saved!');
+    }
+
+    // Save preset from modal form
+    function savePresetFromModal(e) {
+      e.preventDefault();
+      const nameInput = document.getElementById('preset-name');
+      const priceInput = document.getElementById('preset-price');
+
+      const preset = {
+        id: Date.now().toString(),
+        name: nameInput.value.trim(),
+        price: parseFloat(priceInput.value)
+      };
+
+      presets.push(preset);
+      savePresets();
+      renderPresets();
+      
+      nameInput.value = '';
+      priceInput.value = '';
+      
+      showToast('Preset saved!⭐');
+    }
+
+    // Show/hide presets modal
+    function showPresetsModal() {
+      renderPresets();
+      document.getElementById('presets-modal').classList.remove('hidden');
+    }
+
+    function hidePresetsModal() {
+      document.getElementById('presets-modal').classList.add('hidden');
+    }
+
+    // Render presets list
+    function renderPresets() {
+      const presetsList = document.getElementById('presets-list');
+
+      if (presets.length === 0) {
+        presetsList.innerHTML = '<p class="text-gray-400 text-center py-4 text-sm">No presets saved yet</p>';
+        return;
+      }
+
+      presetsList.innerHTML = presets.map(preset => `
+        <div class="flex items-center justify-between bg-white/5 rounded-lg p-3 hover:bg-white/10 transition-all">
+          <div class="flex-1 cursor-pointer" onclick="addPresetToCart('${preset.id}')">
+            <p class="text-white font-medium">${escapeHtml(preset.name)}</p>
+            <p class="text-purple-400 text-sm">R${preset.price.toFixed(2)}</p>
+          </div>
+          <button onclick="deletePreset('${preset.id}')" class="text-red-400 hover:text-red-300 p-1 ml-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+            </svg>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    // Add preset to cart
+    function addPresetToCart(presetId) {
+      const preset = presets.find(p => p.id === presetId);
+      if (!preset) return;
+
+      // Check if item already exists in cart
+      const existingItem = cart.find(item => item.name === preset.name && item.price === preset.price);
+      
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        cart.push({
+          id: Date.now().toString() + Math.random(),
+          name: preset.name,
+          price: preset.price,
+          quantity: 1
+        });
+      }
+
+      saveCart();
+      updateCartBadge();
+      updateCartPreview();
+      showToast('✓ Added from preset!');
+      hidePresetsModal();
+    }
+
+    // Delete preset
+    function deletePreset(presetId) {
+      presets = presets.filter(p => p.id !== presetId);
+      savePresets();
+      renderPresets();
+      showToast('Preset deleted');
+    }
+
+    // Show/hide import modal
+    function showImportModal() {
+      document.getElementById('import-modal').classList.remove('hidden');
+    }
+
+    function hideImportModal() {
+      document.getElementById('import-modal').classList.add('hidden');
+      document.getElementById('import-text').value = '';
+    }
+
+    // Import list from text
+    function importList(e) {
+      e.preventDefault();
+      const text = document.getElementById('import-text').value.trim();
+      
+      if (!text) {
+        showToast('Please paste a list first');
+        return;
+      }
+
+      const lines = text.split('\n').filter(line => line.trim());
+      let imported = 0;
+
+      lines.forEach(line => {
+        const patterns = [
+          /^(.+?)\s+R?([0-9.]+)$/,
+          /^(.+?)\s*[-,:]\s*R?([0-9.]+)$/
+        ];
+
+        for (const pattern of patterns) {
+          const match = line.trim().match(pattern);
+          if (match) {
+            const name = match[1].trim().replace(/^R/, '').trim();
+            const price = parseFloat(match[2]);
+
+            if (name && price > 0) {
+              // Check if item already exists in cart
+              const existingItem = cart.find(item => item.name === name && item.price === price);
+              
+              if (existingItem) {
+                existingItem.quantity += 1;
+              } else {
+                cart.push({
+                  id: Date.now().toString() + Math.random(),
+                  name: name,
+                  price: price,
+                  quantity: 1
+                });
+              }
+              imported++;
+            }
+            break;
+          }
+        }
+      });
+
+      if (imported > 0) {
+        saveCart();
+        updateCartBadge();
+        updateCartPreview();
+        hideImportModal();
+        showToast(`✓ Imported ${imported} item${imported > 1 ? 's' : ''}!`);
+      } else {
+        showToast('Could not parse items. Check format.');
+      }
+    }
+
+    function addToCart(e) {
+      e.preventDefault();
+      const nameInput = document.getElementById('item-name');
+      const priceInput = document.getElementById('item-price');
+      const quantityInput = document.getElementById('item-quantity');
+      
+      const quantity = parseInt(quantityInput.value);
+      const name = nameInput.value.trim();
+      const price = parseFloat(priceInput.value);
+      
+      // Check if item already exists in cart
+      const existingItem = cart.find(item => item.name === name && item.price === price);
+      
+      if (existingItem) {
+        existingItem.quantity += quantity;
+      } else {
+        const item = {
+          id: Date.now().toString() + Math.random(),
+          name: name,
+          price: price,
+          quantity: quantity
+        };
+        cart.push(item);
+      }
+      
+      saveCart();
+      nameInput.value = '';
+      priceInput.value = '';
+      quantityInput.value = '1';
+      
+      updateCartBadge();
+      updateCartPreview();
+      showToast(`${quantity} item${quantity > 1 ? 's' : ''} added to cart!`);
+    }
+
+    function updateCartBadge() {
+      const badge = document.getElementById('cart-badge');
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      if (totalItems > 0) {
+        badge.textContent = totalItems;
+        badge.classList.remove('hidden');
+        badge.classList.add('cart-badge');
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+
+    function updateCartPreview() {
+      const preview = document.getElementById('cart-preview');
+      const totalPreview = document.getElementById('cart-total-preview');
+      const previewTotal = document.getElementById('preview-total');
+
+      if (cart.length === 0) {
+        preview.innerHTML = '<p class="text-gray-400 text-center py-4">Your cart is empty</p>';
+        totalPreview.classList.add('hidden');
+        return;
+      }
+
+      preview.innerHTML = cart.map((item, index) => `
+        <div class="flex items-center justify-between bg-white/5 rounded-lg p-3 fade-in">
+          <div class="flex-1">
+            <p class="text-white font-medium">${escapeHtml(item.name)} ${item.quantity > 1 ? `<span class="text-gray-400">×${item.quantity}</span>` : ''}</p>
+            <p class="text-emerald-400 text-sm">R${item.price.toFixed(2)}${item.quantity > 1 ? ` each • <span class="font-semibold">R${(item.price * item.quantity).toFixed(2)}</span> total` : ''}</p>
+          </div>
+          <button onclick="removeFromCart('${item.id}')" class="text-red-400 hover:text-red-300 p-1">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+            </svg>
+          </button>
+        </div>
+      `).join('');
+
+      const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      previewTotal.textContent = `R${total.toFixed(2)}`;
+      totalPreview.classList.remove('hidden');
+    }
+
+    function removeFromCart(itemId) {
+      cart = cart.filter(item => item.id !== itemId);
+      saveCart();
+      updateCartBadge();
+      updateCartPreview();
+      updateCartModal();
+    }
+
+    function showCart() {
+      updateCartModal();
+      document.getElementById('cart-modal').classList.remove('hidden');
+      document.getElementById('payment-section').classList.add('hidden');
+      document.getElementById('checkout-btn').classList.toggle('hidden', cart.length === 0);
+      document.getElementById('payment-result').classList.add('hidden');
+      document.getElementById('payment-amount').value = '';
+      currentPaymentValid = false;
+      document.getElementById('complete-btn').disabled = true;
+    }
+
+    function hideCart() {
+      document.getElementById('cart-modal').classList.add('hidden');
+    }
+
+    function updateCartModal() {
+      const cartItems = document.getElementById('cart-items');
+      const cartTotal = document.getElementById('cart-total');
+      const checkoutBtn = document.getElementById('checkout-btn');
+
+      if (cart.length === 0) {
+        cartItems.innerHTML = '<p class="text-gray-400 text-center py-4">Cart is empty</p>';
+        cartTotal.innerHTML = 'R0.00';
+        checkoutBtn.classList.add('hidden');
+        return;
+      }
+
+      cartItems.innerHTML = cart.map(item => `
+        <div class="bg-white/5 rounded-lg p-3">
+          <div class="flex items-center justify-between mb-2">
+            <p class="text-white font-medium">${escapeHtml(item.name)} ${item.quantity > 1 ? `<span class="text-gray-400">×${item.quantity}</span>` : ''}</p>
+            <button onclick="removeFromCart('${item.id}'); updateCartModal();" class="text-red-400 hover:text-red-300 p-1">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+          <div class="flex items-center justify-between text-sm">
+            <span class="text-gray-400">R${item.price.toFixed(2)} each</span>
+            <span class="text-emerald-400 font-semibold">R${(item.price * item.quantity).toFixed(2)}</span>
+          </div>
+        </div>
+      `).join('');
+
+      const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      cartTotal.innerHTML = `R${total.toFixed(2)}`;
+      checkoutBtn.classList.remove('hidden');
+    }
+
+    function showPayment() {
+      document.getElementById('payment-section').classList.remove('hidden');
+      document.getElementById('checkout-btn').classList.add('hidden');
+    }
+
+    function calculateChange() {
+      const paymentInput = document.getElementById('payment-amount');
+      const resultDiv = document.getElementById('payment-result');
+      const completeBtn = document.getElementById('complete-btn');
+      
+      const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const payment = parseFloat(paymentInput.value) || 0;
+
+      resultDiv.classList.remove('hidden');
+
+      if (payment < total) {
+        const shortage = total - payment;
+        resultDiv.className = 'mb-4 p-4 rounded-xl bg-red-500/20 border border-red-500/50';
+        resultDiv.innerHTML = `
+          <p class="text-red-400 font-semibold">❌ Insufficient Payment</p>
+          <p class="text-white">Short by: R${shortage.toFixed(2)}</p>
+        `;
+        currentPaymentValid = false;
+        completeBtn.disabled = true;
+      } else {
+        currentChange = payment - total;
+        resultDiv.className = 'mb-4 p-4 rounded-xl bg-emerald-500/20 border border-emerald-500/50';
+        resultDiv.innerHTML = `
+          <p class="text-emerald-400 font-semibold">✅ Change you expect to receive</p>
+          <p class="text-white">R${currentChange.toFixed(2)}</p>
+        `;
+        currentPaymentValid = true;
+        completeBtn.disabled = false;
+      }
+    }
+
+    function completeOrder() {
+      if (!currentPaymentValid || cart.length === 0) return;
+
+      const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const payment = parseFloat(document.getElementById('payment-amount').value);
+
+      const order = {
+        id: `ORD-${Date.now()}`,
+        items: cart.map(i => ({ name: i.name, price: i.price, quantity: i.quantity })),
+        total: total,
+        paid: payment,
+        change: currentChange,
+        date: new Date().toISOString()
+      };
+
+      orderHistory.push(order);
+      saveHistory();
+
+      cart = [];
+      saveCart();
+      updateCartBadge();
+      updateCartPreview();
+      hideCart();
+      showToast('✅ Task saved in history');
+    }
+
+    function showHistory() {
+      renderHistory();
+      document.getElementById('history-modal').classList.remove('hidden');
+    }
+
+    function hideHistory() {
+      document.getElementById('history-modal').classList.add('hidden');
+    }
+
+    function renderHistory() {
+      const historyList = document.getElementById('history-list');
+
+      if (orderHistory.length === 0) {
+        historyList.innerHTML = '<p class="text-gray-400 text-center py-8">No order history yet</p>';
+        return;
+      }
+
+      const sorted = [...orderHistory].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      historyList.innerHTML = sorted.map(order => {
+        const date = new Date(order.date);
+        const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        return `
+          <div class="bg-white/5 rounded-xl p-4 border border-white/10">
+            <div class="flex justify-between items-start mb-2">
+              <span class="text-emerald-400 font-mono text-sm">${order.id}</span>
+              <span class="text-gray-400 text-xs">${dateStr}</span>
+            </div>
+            <div class="space-y-1 mb-3">
+              ${order.items.map(item => `
+                <div class="flex justify-between text-sm">
+                  <span class="text-gray-300">${escapeHtml(item.name)} ${item.quantity > 1 ? `×${item.quantity}` : ''}</span>
+                  <span class="text-white">R${((item.price * (item.quantity || 1)).toFixed(2))}</span>
+                </div>
+              `).join('')}
+            </div>
+            <div class="border-t border-white/10 pt-2 space-y-1 text-sm">
+              <div class="flex justify-between">
+                <span class="text-gray-400">Total:</span>
+                <span class="text-white font-semibold">R${order.total.toFixed(2)}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Paid:</span>
+                <span class="text-white">R${order.paid.toFixed(2)}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Change:</span>
+                <span class="text-emerald-400">R${order.change.toFixed(2)}</span>
+              </div>
+            </div>
+            <div class="mt-3 flex gap-2">
+              <button onclick="printOrder('${order.id}')" class="flex-1 py-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 rounded-lg text-sm transition-all flex items-center justify-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                </svg>
+                Print
+              </button>
+              <button onclick="deleteOrder('${order.id}')" class="flex-1 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-lg text-sm transition-all flex items-center justify-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+                Delete
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function printOrder(orderId) {
+      const order = orderHistory.find(o => o.id === orderId);
+      if (!order) return;
+
+      const date = new Date(order.date);
+      const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      const printContent = `
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BigTree Shopping Cart - Receipt</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      max-width: 600px;
+      margin: 0 auto;
+      color: #333;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .header img {
+      width: 80px;
+      margin-bottom: 10px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 26px;
+      color: #10b981;
+    }
+
+    .header p {
+      margin: 4px 0 0;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .order-info {
+      margin: 20px 0;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .items {
+      margin: 20px 0;
+    }
+
+    .item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .totals {
+      margin-top: 20px;
+      border-top: 2px solid #10b981;
+      padding-top: 10px;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: 14px;
+    }
+
+    .total-row.final {
+      font-weight: bold;
+      font-size: 18px;
+      color: #10b981;
+    }
+
+    .footer {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 12px;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <img src="BigTree_logo.png" alt="BigTree Logo">
+    <h1>BigTree Shopping Cart</h1>
+    <p>Your smart shopping companion</p>
+  </div>
+
+  <!-- Order Info -->
+  <div class="order-info">
+    <strong>Order ID:</strong> ${order.id}<br>
+    <strong>Date:</strong> ${dateStr}
+  </div>
+
+  <!-- Items -->
+  <div class="items">
+    <h2>Items</h2>
+    ${order.items.map(item => `
+      <div class="item">
+        <span>${escapeHtml(item.name)} ${item.quantity > 1 ? `×${item.quantity}` : ''}</span>
+        <span>R${((item.price * (item.quantity || 1)).toFixed(2))}</span>
+      </div>
+    `).join('')}
+  </div>
+
+  <!-- Totals -->
+  <div class="totals">
+    <div class="total-row">
+      <span>Total:</span>
+      <span>R${order.total.toFixed(2)}</span>
+    </div>
+    <div class="total-row">
+      <span>Paid:</span>
+      <span>R${order.paid.toFixed(2)}</span>
+    </div>
+    <div class="total-row final">
+      <span>Change:</span>
+      <span>R${order.change.toFixed(2)}</span>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>Thank you for shopping with BigTree 🌱</p>
+    <p>Founder & Developer: St Crijoh Studios</p>
+  </div>
+
+</body>
+</html>
+`;
+
+
+      const printWindow = window.open('', '_blank');
+      if (printWindow) {
+        printWindow.document.write(printContent);
+        printWindow.document.close();
+        printWindow.focus();
+        setTimeout(() => {
+          printWindow.print();
+        }, 250);
+      }
+    }
+
+    function deleteOrder(orderId) {
+      orderHistory = orderHistory.filter(o => o.id !== orderId);
+      saveHistory();
+      renderHistory();
+      showToast('Order deleted');
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 2500);
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Initialize app on load
+    loadData();
+
+    const menuLinks = [
+    { label: 'Grocery List', href: 'grocery.html' },
+    { label: 'About Us', href: 'about.html' },
+    { label: 'Terms & Conditions', href: 'terms.html' },
+    { label: 'Tutorials', href: 'tutor.html' }
+  ];
+
+  const menuPanel = document.getElementById('menuPanel');
+  const menuButton = document.getElementById('menuButton');
+
+  // Build menu
+  menuLinks.forEach(link => {
+    const a = document.createElement('a');
+    a.href = link.href;
+    a.textContent = link.label;
+    a.className = 'block text-white hover:text-gray-300 transition';
+    menuPanel.appendChild(a);
+  });
+
+  function toggleMenu(e) {
+    e.stopPropagation();
+    menuPanel.classList.toggle('hidden');
+  }
+
+  // Close menu when clicking outside
+  document.addEventListener('click', (e) => {
+    if (
+      !menuPanel.contains(e.target) &&
+      !menuButton.contains(e.target)
+    ) {
+      menuPanel.classList.add('hidden');
+    }
+  });
+
+  </script>
+
+  
+
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9c3a248776a9b71f',t:'MTc2OTM2ODk4Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();
+ </script></body>
+ </html>
