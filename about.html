@@ -2,98 +2,187 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>About Us</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us - BigTree Shopping Cart</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .fade-in {
+      animation: fadeIn 0.5s ease-in;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+  </style>
 </head>
 <body class="bg-gradient-to-br from-gray-900 to-black min-h-screen text-white">
 
-<header class="flex items-center justify-between px-4 py-3">
+<header class="flex items-center justify-between px-4 py-3 sticky top-0 bg-gray-900/80 backdrop-blur-md z-50">
   <div class="flex items-center space-x-2">
     <img src="BigTree_logo.png" class="w-8 h-8" alt="App Logo">
-    <span class="font-semibold text-lg">BigTree Shopping Cart App</span>
+    <span class="font-semibold text-lg">BigTree Shopping Cart</span>
   </div>
 
-  <button onclick="toggleMenu(event)" class="text-2xl">☰</button>
+  <button id="menuButton" class="text-2xl hover:text-green-400 transition-colors">☰</button>
 </header>
 
-<div id="menuPanel" class="hidden px-4 pb-4">
-  <div class="bg-white/10 backdrop-blur-md rounded-xl p-3 space-y-3">
-    <a href="index.html" class="block hover:text-gray-300">Home</a>
-    <a href="grocery.html" class="block hover:text-gray-300">Grocery List</a>
-    <a href="terms.html" class="block hover:text-gray-300">Terms & Conditions</a>
-    <a href="tutor.html" class="block hover:text-gray-300">Tutorials</a>
+<div id="menuPanel" class="hidden px-4 pb-4 absolute top-16 right-4 left-4 z-40">
+  <div class="bg-white/10 backdrop-blur-md rounded-xl p-3 space-y-3 border border-white/20">
+    <a href="index.html" class="block hover:text-green-300 p-2 rounded hover:bg-white/5 transition"><i class="fas fa-home mr-2"></i>Home</a>
+    <a href="grocery.html" class="block hover:text-green-300 p-2 rounded hover:bg-white/5 transition"><i class="fas fa-shopping-cart mr-2"></i>Grocery List</a>
+    <a href="terms.html" class="block hover:text-green-300 p-2 rounded hover:bg-white/5 transition"><i class="fas fa-file-contract mr-2"></i>Terms & Conditions</a>
+    <a href="tutor.html" class="block hover:text-green-300 p-2 rounded hover:bg-white/5 transition"><i class="fas fa-graduation-cap mr-2"></i>Tutorials</a>
+    <a href="about.html" class="block bg-green-900/30 text-green-300 p-2 rounded hover:bg-green-900/40 transition"><i class="fas fa-info-circle mr-2"></i>About Us</a>
   </div>
 </div>
 
-<main class="px-4 pt-4">
-  <h1 class="text-xl font-semibold mb-4"><strong>About Us</strong></h1>
+<main class="px-4 pt-4 pb-8 max-w-3xl mx-auto fade-in">
+  <div class="mb-8 text-center">
+    <h1 class="text-3xl font-bold mb-2">About BigTree</h1>
+    <div class="h-1 w-24 bg-green-500 mx-auto rounded-full"></div>
+  </div>
 
+  <div class="space-y-6">
+    <section class="bg-white/5 rounded-2xl p-6 card-hover">
+      <h2 class="text-xl font-semibold mb-3 text-green-300"><i class="fas fa-seedling mr-2"></i>Our Mission</h2>
+      <p class="mb-4 text-gray-300">BigTree Shopping Cart was created to make everyday shopping simpler, faster, and smarter <span class="text-green-400">🌱</span>.</p>
+      <p class="text-gray-300">We believe that managing shopping lists, tracking costs, and handling checkout calculations shouldn't be stressful or time-consuming. BigTree is designed to help individuals, families, and small businesses stay organized, avoid surprises at checkout, and keep a clear record of their purchases — all in one easy-to-use app.</p>
+    </section>
 
-    
-BigTree Shopping Cart was created to make everyday shopping simpler, faster, and smarter 🌱.
-  
-We believe that managing shopping lists, tracking costs, and handling checkout calculations shouldn’t be stressful or time-consuming. BigTree is designed to help individuals, families, and small businesses stay organized, avoid surprises at checkout, and keep a clear record of their purchases — all in one easy-to-use app.
-    
-<strong>What BigTree Helps You Do</strong>
-🛒 Quickly add and manage shopping items
-🎤 Use voice input for faster entry
-⭐ Save frequently bought items as presets
-🧾 Track order history and print receipts
-💰 Calculate totals, payments, and change instantly
-📦 Import shopping lists with ease
-    
-Everything runs locally in your browser, keeping your data private, fast, and always accessible — even without an internet connection.
-    
-<strong><u>Our Vision</u></strong>
-BigTree Shopping Cart is built with simplicity, reliability, and real-world usefulness in mind. The goal is to grow this app into a trusted shopping companion that adapts to everyday needs while staying lightweight and user-friendly.
-Built With Care
+    <section class="bg-white/5 rounded-2xl p-6 card-hover">
+      <h2 class="text-xl font-semibold mb-4 text-green-300"><i class="fas fa-tools mr-2"></i>What BigTree Helps You Do</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="flex items-start space-x-2">
+          <span class="text-green-400 mt-1">🛒</span>
+          <div>
+            <h3 class="font-medium">Quick Management</h3>
+            <p class="text-sm text-gray-400">Quickly add and manage shopping items</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-2">
+          <span class="text-green-400 mt-1">🎤</span>
+          <div>
+            <h3 class="font-medium">Voice Input</h3>
+            <p class="text-sm text-gray-400">Use voice input for faster entry</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-2">
+          <span class="text-green-400 mt-1">⭐</span>
+          <div>
+            <h3 class="font-medium">Item Presets</h3>
+            <p class="text-sm text-gray-400">Save frequently bought items as presets</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-2">
+          <span class="text-green-400 mt-1">🧾</span>
+          <div>
+            <h3 class="font-medium">Track History</h3>
+            <p class="text-sm text-gray-400">Track order history and print receipts</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-2">
+          <span class="text-green-400 mt-1">💰</span>
+          <div>
+            <h3 class="font-medium">Calculate Totals</h3>
+            <p class="text-sm text-gray-400">Calculate totals, payments, and change instantly</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-2">
+          <span class="text-green-400 mt-1">📦</span>
+          <div>
+            <h3 class="font-medium">Import Lists</h3>
+            <p class="text-sm text-gray-400">Import shopping lists with ease</p>
+          </div>
+        </div>
+      </div>
+      <div class="mt-6 p-4 bg-green-900/20 rounded-lg border border-green-900/30">
+        <p class="text-sm text-green-300"><i class="fas fa-lock mr-2"></i>Everything runs locally in your browser, keeping your data private, fast, and always accessible — even without an internet connection.</p>
+      </div>
+    </section>
 
-<stong><u>Credit</u></stong>
-This app is proudly founded and developed by St Crijoh Studios, with a focus on clean design, smooth interactions, and practical features that genuinely help users.
+    <section class="bg-white/5 rounded-2xl p-6 card-hover">
+      <h2 class="text-xl font-semibold mb-3 text-green-300"><i class="fas fa-eye mr-2"></i>Our Vision</h2>
+      <p class="text-gray-300">BigTree Shopping Cart is built with simplicity, reliability, and real-world usefulness in mind. The goal is to grow this app into a trusted shopping companion that adapts to everyday needs while staying lightweight and user-friendly.</p>
+      <p class="mt-3 text-gray-300">Built with care, we're continuously improving based on user feedback to make your shopping experience seamless.</p>
+    </section>
 
-Thank you for choosing BigTree Shopping Cart —
-your smart shopping companion 🌳🛍️
+    <section class="bg-white/5 rounded-2xl p-6 card-hover">
+      <h2 class="text-xl font-semibold mb-3 text-green-300"><i class="fas fa-award mr-2"></i>Credit</h2>
+      <p class="text-gray-300 mb-4">This app is proudly founded and developed by <span class="font-semibold text-green-300">St Crijoh Studios</span>, with a focus on clean design, smooth interactions, and practical features that genuinely help users.</p>
+      <div class="p-4 bg-gray-800/50 rounded-lg border border-gray-700">
+        <p class="text-center italic text-gray-300"><i class="fas fa-quote-left text-green-400 mr-2"></i>Thank you for choosing BigTree Shopping Cart — your smart shopping companion <span class="text-green-400">🌳🛍️</span></p>
+      </div>
+    </section>
+  </div>
+
+  <div class="mt-12 text-center">
+  <h3 class="text-xl font-bold mb-6 text-white">Connect With Us</h3>
+  <p class="text-gray-400 mb-6 max-w-2xl mx-auto">
+    Have suggestions, feedback, or questions? We're always eager to hear from our users and improve your experience.
   </p>
+  <div class="flex justify-center space-x-6">
+    <a href="https://www.facebook.com/CRIJ0H" target="_blank" rel="noopener noreferrer" 
+       class="w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-colors"
+       title="Visit our Facebook page">
+      <i class="fab fa-facebook-f"></i>
+    </a>
+    <a href="https://github.com/Xitsundzuxo" target="_blank" rel="noopener noreferrer"
+       class="w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center hover:bg-gray-700 hover:text-white transition-colors"
+       title="Visit our GitHub repository">
+      <i class="fab fa-github"></i>
+    </a>
+    <a href="mailto:stcrijohstudio@gmail.com" 
+       class="w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center hover:bg-red-600 hover:text-white transition-colors"
+       title="Send us an email">
+      <i class="fas fa-envelope"></i>
+    </a>
+  </div>
+  <p class="mt-4 text-sm text-gray-500">
+    Email us directly: <a href="mailto:stcrijohstudio@gmail.com" class="text-green-400 hover:text-green-300 underline">stcrijohstudio@gmail.com</a>
+  </p>
+</div>
 </main>
 
 <script>
-  function toggleMenu() {
-    document.getElementById('menuPanel').classList.toggle('hidden');
-  }
-
-  const menuPanel = document.getElementById('menuPanel');
   const menuButton = document.getElementById('menuButton');
-
-  // Build menu
-  menuLinks.forEach(link => {
-    const a = document.createElement('a');
-    a.href = link.href;
-    a.textContent = link.label;
-    a.className = 'block text-white hover:text-gray-300 transition';
-    menuPanel.appendChild(a);
-  });
+  const menuPanel = document.getElementById('menuPanel');
 
   function toggleMenu(e) {
-    e.stopPropagation();
+    if (e) e.stopPropagation();
     menuPanel.classList.toggle('hidden');
   }
+
+  menuButton.addEventListener('click', toggleMenu);
 
   // Close menu when clicking outside
   document.addEventListener('click', (e) => {
     if (
       !menuPanel.contains(e.target) &&
-      !menuButton.contains(e.target)
+      !menuButton.contains(e.target) &&
+      !menuPanel.classList.contains('hidden')
     ) {
+      menuPanel.classList.add('hidden');
+    }
+  });
+
+  // Close menu when pressing Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !menuPanel.classList.contains('hidden')) {
       menuPanel.classList.add('hidden');
     }
   });
 </script>
 
-
 </body>
 </html>
-
-
-
-
-
