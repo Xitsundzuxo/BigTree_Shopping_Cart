@@ -75,6 +75,29 @@
       filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
     }
     
+    /* Fixed Menu Panel Styles */
+    #menuPanel {
+      position: fixed;
+      top: 70px;
+      right: 16px;
+      width: 256px;
+      z-index: 1000;
+      max-height: calc(100vh - 80px);
+      overflow-y: auto;
+    }
+    
+    /* Add a backdrop for better visibility */
+    .menu-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      z-index: 999;
+      display: none;
+    }
+    
   </style>
 </head>
  <body class="bg-gradient-to-br from-gray-900 to-black min-h-screen text-white">
@@ -90,22 +113,23 @@
 
   <!-- Fixed Header with Logo and Menu -->
   <header class="flex items-center justify-between px-6 py-4 sticky top-0 bg-gray-900/90 backdrop-blur-md z-50 border-b border-gray-800">
-  <div class="flex items-center space-x-3">
-    <div class="flex items-center space-x-2">
-    <img src="BigTree_logo.png" class="w-8 h-8" alt="App Logo">
-    
-  </div>
-    <div>
-      <span class="font-bold text-xl">BigTree Shopping Cart</span>
-      <div class="text-xs text-gray-400">Home</div>
+    <div class="flex items-center space-x-3">
+      <div class="flex items-center space-x-2">
+        <img src="BigTree_logo.png" class="w-8 h-8" alt="App Logo">
+      </div>
+      <div>
+        <span class="font-bold text-xl">BigTree Shopping Cart</span>
+        <div class="text-xs text-gray-400">Home</div>
+      </div>
     </div>
-  </div>
-
     <button onclick="toggleMenu()" class="text-2xl hover:text-green-400 transition-colors p-2">☰</button>
   </header>
 
-  <!-- Menu Panel -->
-  <div id="menuPanel" class="hidden absolute top-16 right-4 w-64 z-50">
+  <!-- Menu Backdrop (for closing menu when clicking outside) -->
+  <div id="menuBackdrop" class="menu-backdrop" onclick="closeMenu()"></div>
+
+  <!-- Menu Panel - Now Fixed Position -->
+  <div id="menuPanel" class="hidden">
     <div class="bg-gray-800/95 backdrop-blur-md rounded-xl p-4 space-y-2 border border-gray-700 shadow-2xl">
       <a href="index.html" class="flex items-center p-3 rounded-lg bg-green-900/30 text-green-300 border border-green-800/30">
         <i class="fas fa-home w-6 mr-3"></i>
@@ -130,13 +154,12 @@
     </div>
   </div>
 
+  <!-- The rest of your HTML remains exactly the same -->
   <div id="app" class="min-h-screen w-full overflow-auto hidden" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);">
     <!-- Main Shopping View -->
     <div id="main-view" class="min-h-screen p-4 md:p-6">
       <!-- Page Header (Moved under the fixed header) -->
       <div class="mb-6 pt-2">
-        
-        
         <div class="flex gap-2 justify-end">
           <button id="history-btn" onclick="showHistory()" class="relative px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-medium transition-all flex items-center gap-2">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
@@ -402,18 +425,36 @@
     // Menu toggle function
     function toggleMenu() {
       const menuPanel = document.getElementById('menuPanel');
-      menuPanel.classList.toggle('hidden');
+      const menuBackdrop = document.getElementById('menuBackdrop');
+      
+      if (menuPanel.classList.contains('hidden')) {
+        menuPanel.classList.remove('hidden');
+        menuBackdrop.style.display = 'block';
+      } else {
+        closeMenu();
+      }
+    }
+
+    // Close menu function
+    function closeMenu() {
+      const menuPanel = document.getElementById('menuPanel');
+      const menuBackdrop = document.getElementById('menuBackdrop');
+      
+      menuPanel.classList.add('hidden');
+      menuBackdrop.style.display = 'none';
     }
 
     // Close menu when clicking outside
     document.addEventListener('click', function(event) {
       const menuPanel = document.getElementById('menuPanel');
       const menuButton = document.querySelector('button[onclick="toggleMenu()"]');
+      const menuBackdrop = document.getElementById('menuBackdrop');
       
       if (!menuPanel.classList.contains('hidden') && 
           !menuPanel.contains(event.target) && 
           !menuButton.contains(event.target)) {
         menuPanel.classList.add('hidden');
+        menuBackdrop.style.display = 'none';
       }
     });
 
@@ -422,9 +463,28 @@
       if (event.key === 'Escape') {
         const menuPanel = document.getElementById('menuPanel');
         if (!menuPanel.classList.contains('hidden')) {
-          menuPanel.classList.add('hidden');
+          closeMenu();
         }
       }
+    });
+
+    // Close menu when scrolling
+    let scrollTimeout;
+    window.addEventListener('scroll', function() {
+      const menuPanel = document.getElementById('menuPanel');
+      if (!menuPanel.classList.contains('hidden')) {
+        closeMenu();
+      }
+      
+      // Clear any existing timeout
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
+      
+      // Set a timeout to handle rapid scrolling
+      scrollTimeout = setTimeout(function() {
+        // Additional scroll handling if needed
+      }, 50);
     });
 
     // Cart state
