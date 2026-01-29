@@ -24,17 +24,62 @@
       transform: translateY(-5px);
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     }
+
+    /* Animation for menu */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .animate-fadeIn {
+      animation: fadeIn 0.2s ease-out;
+    }
   </style>
 </head>
 <body class="bg-gradient-to-br from-gray-900 to-black min-h-screen text-white">
 
-<header class="flex items-center justify-between px-4 py-3 sticky top-0 bg-gray-900/80 backdrop-blur-md z-50">
-  <div class="flex items-center space-x-2">
+<header class="flex items-center justify-between px-6 py-4 sticky top-0 bg-gray-900/90 backdrop-blur-md z-50 border-b border-gray-800">
+  <div class="flex items-center space-x-3">
+    <div class="flex items-center space-x-2">
     <img src="BigTree_logo.png" class="w-8 h-8" alt="App Logo">
-    <span class="font-semibold text-lg">BigTree Shopping Cart</span>
+    
   </div>
+    <div>
+      <span class="font-bold text-xl">BigTree Shopping Cart</span>
+      <div class="text-xs text-gray-400">About Us</div>
+    </div>
+  </div>
+<div class="relative">
+   <!-- Menu Button - Fixed to use original style -->
+ <button onclick="toggleMenu(event)" class="text-2xl focus:outline-none">☰</button>
 
-  <button id="menuButton" class="text-2xl hover:text-green-400 transition-colors">☰</button>
+
+    <!-- Menu Panel (opens LEFT of icon) -->
+    <!-- Menu Panel -->
+<div id="menuPanel" class="hidden absolute top-16 right-4 w-64 z-50">
+  <div class="bg-gray-800/95 backdrop-blur-md rounded-xl p-4 space-y-2 border border-gray-700 shadow-2xl">
+    <a href="index.html" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50 transition">
+      <i class="fas fa-home w-6 mr-3 text-gray-400"></i>
+      <span>Home</span>
+    </a>
+    <a href="grocery.html" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50 transition">
+      <i class="fas fa-file-contract w-6 mr-3 text-gray-400"></i>
+      <span class="font-medium">Grocery List</span>
+    </a>
+    <a href="about.html" class="flex items-center p-3 rounded-lg bg-green-900/30 text-green-300 border border-green-800/30">
+      <i class="fas fa-file-contract w-6 mr-3"></i>
+      <span class="font-medium">About Us</span>
+    </a>
+    <a href="terms.html" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50 transition">
+      <i class="fas fa-file-contract w-6 mr-3 text-gray-400"></i>
+      <span>Terms & Conditions</span>
+    </a>
+    <a href="tutor.html" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50 transition">
+      <i class="fas fa-graduation-cap w-6 mr-3 text-gray-400"></i>
+      <span>Tutorials</span>
+    </a>
+  </div>
+</div>
 </header>
 
 <div id="menuPanel" class="hidden px-4 pb-4 absolute top-16 right-4 left-4 z-40">
@@ -49,8 +94,8 @@
 
 <main class="px-4 pt-4 pb-8 max-w-3xl mx-auto fade-in">
   <div class="mb-8 text-center">
-    <h1 class="text-3xl font-bold mb-2">About BigTree</h1>
-    <div class="h-1 w-24 bg-green-500 mx-auto rounded-full"></div>
+    <h1 class="text-3xl font-bold mb-2"><u>About BigTree Shopping Cart</u></h1>
+    
   </div>
 
   <div class="space-y-6">
@@ -142,6 +187,14 @@
        title="Visit our GitHub repository">
       <i class="fab fa-github"></i>
     </a>
+    <a href="https://www.tiktok.com/@crijoh" target="_blank" rel="noopener noreferrer"
+       class="w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center hover:bg-black hover:text-white transition-colors group"
+       title="Follow us on TikTok">
+      <i class="fab fa-tiktok"></i>
+      <span class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+        Follow us on TikTok
+      </span>
+    </a>
     <a href="mailto:stcrijohstudio@gmail.com" 
        class="w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center hover:bg-red-600 hover:text-white transition-colors"
        title="Send us an email">
@@ -150,6 +203,9 @@
   </div>
   <p class="mt-4 text-sm text-gray-500">
     Email us directly: <a href="mailto:stcrijohstudio@gmail.com" class="text-green-400 hover:text-green-300 underline">stcrijohstudio@gmail.com</a>
+  </p>
+  <p class="mt-2 text-xs text-gray-600">
+    Follow us for updates, tips, and shopping hacks!
   </p>
 </div>
 </main>
