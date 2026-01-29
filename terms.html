@@ -2,71 +2,234 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Terms & Conditions</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms & Conditions - BigTree Shopping Cart</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .fade-in {
+      animation: fadeIn 0.5s ease-in;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+  </style>
 </head>
 <body class="bg-gradient-to-br from-gray-900 to-black min-h-screen text-white">
 
-<header class="flex items-center justify-between px-4 py-3">
-  <div class="flex items-center space-x-2">
+<header class="flex items-center justify-between px-6 py-4 sticky top-0 bg-gray-900/90 backdrop-blur-md z-50 border-b border-gray-800">
+  <div class="flex items-center space-x-3">
+    <div class="flex items-center space-x-2">
     <img src="BigTree_logo.png" class="w-8 h-8" alt="App Logo">
-    <span class="font-semibold text-lg">BigTree Shopping Cart App</span>
+    
+  </div>
+    <div>
+      <span class="font-bold text-xl">BigTree Shopping Cart</span>
+      <div class="text-xs text-gray-400">Terms & Conditions</div>
+    </div>
   </div>
 
-  <button onclick="toggleMenu(event)" class="text-2xl">☰</button>
+  <button onclick="toggleMenu()" class="text-2xl hover:text-green-400 transition-colors p-2">☰</button>
 </header>
 
-<div id="menuPanel" class="hidden px-4 pb-4">
-  <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 space-y-3">
-    <a href="index.html" class="block hover:text-gray-300">Home</a>
-    <a href="grocery.html" class="block hover:text-gray-300">Grocery List</a>
-    <a href="about.html" class="block hover:text-gray-300">About Us</a>
-    <a href="tutor.html" class="block hover:text-gray-300">Tutorials</a>
+<!-- Menu Panel -->
+<div id="menuPanel" class="hidden absolute top-16 right-4 w-64 z-50">
+  <div class="bg-gray-800/95 backdrop-blur-md rounded-xl p-4 space-y-2 border border-gray-700 shadow-2xl">
+    <a href="index.html" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50 transition">
+      <i class="fas fa-home w-6 mr-3 text-gray-400"></i>
+      <span>Home</span>
+    </a>
+    <a href="grocery.html" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50 transition">
+      <i class="fas fa-shopping-cart w-6 mr-3 text-gray-400"></i>
+      <span>Grocery List</span>
+    </a>
+    <a href="about.html" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50 transition">
+      <i class="fas fa-info-circle w-6 mr-3 text-gray-400"></i>
+      <span>About Us</span>
+    </a>
+    <a href="terms.html" class="flex items-center p-3 rounded-lg bg-green-900/30 text-green-300 border border-green-800/30">
+      <i class="fas fa-file-contract w-6 mr-3"></i>
+      <span class="font-medium">Terms & Conditions</span>
+    </a>
+    <a href="tutor.html" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50 transition">
+      <i class="fas fa-graduation-cap w-6 mr-3 text-gray-400"></i>
+      <span>Tutorials</span>
+    </a>
   </div>
 </div>
 
-<main class="px-4 pt-4">
-  <h1 class="text-xl font-semibold mb-4">Terms & Conditions will be updated.
+<main class="px-4 sm:px-6 pt-6 pb-20 max-w-4xl mx-auto fade-in">
+  <div class="mb-8 text-center">
+    <h1 class="text-3xl font-bold mb-2"><u>Terms & Conditions</u></h1>
     
-  </h1>
+    <p class="text-gray-400 mt-4">Last updated: <span id="currentDate"></span></p>
+  </div>
 
-  <p class="text-gray-300 text-sm leading-relaxed">
-    By using this application, you agree that all data is provided as-is.
-    The developer is not responsible for incorrect pricing, availability,
-    or order fulfillment.
-  </p>
+  <div class="space-y-6">
+    <!-- Acceptance Section -->
+    <section class="bg-white/5 rounded-2xl p-6 card-hover">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-check-circle text-green-400 text-xl mr-3"></i>
+        <h2 class="text-xl font-bold text-white">Acceptance of Terms</h2>
+      </div>
+      <p class="text-gray-300 leading-relaxed">
+        By accessing and using the BigTree Shopping Cart application, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by these terms, please do not use this application.
+      </p>
+    </section>
+
+    <!-- Use of Application Section -->
+    <section class="bg-white/5 rounded-2xl p-6 card-hover">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-laptop-code text-green-400 text-xl mr-3"></i>
+        <h2 class="text-xl font-bold text-white">Use of Application</h2>
+      </div>
+      <p class="text-gray-300 leading-relaxed mb-4">
+        BigTree Shopping Cart is provided as a free tool to help manage shopping lists and calculate expenses. The application runs locally in your browser, and all data is stored on your device.
+      </p>
+      <div class="bg-gray-800/50 rounded-lg p-4 mt-4">
+        <p class="text-green-300 text-sm"><i class="fas fa-info-circle mr-2"></i>All data is stored locally in your browser using localStorage. No data is transmitted to external servers.</p>
+      </div>
+    </section>
+
+    <!-- Limitations Section -->
+    <section class="bg-white/5 rounded-2xl p-6 card-hover">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-exclamation-triangle text-yellow-400 text-xl mr-3"></i>
+        <h2 class="text-xl font-bold text-white">Limitations & Disclaimer</h2>
+      </div>
+      <div class="space-y-3">
+        <div class="flex items-start">
+          <i class="fas fa-calculator text-gray-400 mt-1 mr-3"></i>
+          <p class="text-gray-300">Calculation accuracy is provided as-is. Always verify totals manually when making actual purchases.</p>
+        </div>
+        <div class="flex items-start">
+          <i class="fas fa-database text-gray-400 mt-1 mr-3"></i>
+          <p class="text-gray-300">Data persistence depends on your browser settings. Clearing browser data may remove your saved lists.</p>
+        </div>
+        <div class="flex items-start">
+          <i class="fas fa-shield-alt text-gray-400 mt-1 mr-3"></i>
+          <p class="text-gray-300">While we prioritize security, users are responsible for protecting their devices from unauthorized access.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Intellectual Property Section -->
+    <section class="bg-white/5 rounded-2xl p-6 card-hover">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-copyright text-green-400 text-xl mr-3"></i>
+        <h2 class="text-xl font-bold text-white">Intellectual Property</h2>
+      </div>
+      <p class="text-gray-300 leading-relaxed">
+        BigTree Shopping Cart, including its design, code, and branding elements, is the intellectual property of St Crijoh Studios. You may use the application for personal, non-commercial purposes but may not modify, distribute, or reverse-engineer the application without explicit permission.
+      </p>
+    </section>
+
+    <!-- Privacy Section -->
+    <section class="bg-white/5 rounded-2xl p-6 card-hover">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-user-shield text-green-400 text-xl mr-3"></i>
+        <h2 class="text-xl font-bold text-white">Privacy</h2>
+      </div>
+      <p class="text-gray-300 leading-relaxed mb-4">
+        BigTree Shopping Cart operates entirely locally in your browser. No personal data is collected, transmitted, or stored on external servers. Your shopping lists and preferences remain on your device.
+      </p>
+      <div class="bg-green-900/20 rounded-lg p-4 border border-green-800/30">
+        <p class="text-green-300 text-sm"><i class="fas fa-lock mr-2"></i>Your data never leaves your device. We believe in privacy by design.</p>
+      </div>
+    </section>
+
+    <!-- Updates & Changes Section -->
+    <section class="bg-white/5 rounded-2xl p-6 card-hover">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-sync-alt text-green-400 text-xl mr-3"></i>
+        <h2 class="text-xl font-bold text-white">Updates & Changes</h2>
+      </div>
+      <p class="text-gray-300 leading-relaxed">
+        These Terms & Conditions may be updated periodically. Continued use of the application after changes constitutes acceptance of the updated terms. We recommend checking this page regularly for updates.
+      </p>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="bg-white/5 rounded-2xl p-6 card-hover">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-envelope text-green-400 text-xl mr-3"></i>
+        <h2 class="text-xl font-bold text-white">Contact Information</h2>
+      </div>
+      <p class="text-gray-300 leading-relaxed">
+        For questions or concerns regarding these Terms & Conditions, please contact us at:
+      </p>
+      <div class="mt-4 p-4 bg-gray-800/50 rounded-lg">
+        <p class="text-green-300"><i class="fas fa-envelope mr-2"></i>Email: <a href="mailto:stcrijohstudio@gmail.com" class="underline hover:text-green-400">stcrijohstudio@gmail.com</a></p>
+        <p class="text-gray-400 text-sm mt-2">We strive to respond to all inquiries within 48 hours.</p>
+      </div>
+    </section>
+
+    <!-- Acknowledgment Section -->
+    <section class="bg-gray-800/50 rounded-2xl p-6 border border-gray-700">
+      <div class="flex items-center justify-center mb-4">
+        <i class="fas fa-handshake text-green-400 text-2xl mr-3"></i>
+        <h2 class="text-xl font-bold text-white">Your Acknowledgment</h2>
+      </div>
+      <p class="text-gray-300 text-center">
+        By using BigTree Shopping Cart, you acknowledge that you have read, understood, and agree to be bound by these Terms & Conditions.
+      </p>
+      <div class="mt-6 p-4 bg-green-900/10 rounded-lg border border-green-800/20">
+        <p class="text-center text-gray-400 text-sm">
+          <i class="fas fa-info-circle mr-2"></i>These terms are designed to protect both users and developers while ensuring a positive experience for everyone.
+        </p>
+      </div>
+    </section>
+  </div>
 </main>
 
 <script>
-  function toggleMenu() {
-    document.getElementById('menuPanel').classList.toggle('hidden');
-  }
-</script>
-<script>
-  const menuPanel = document.getElementById('menuPanel');
-  const menuButton = document.getElementById('menuButton');
-
-  // Build menu
-  menuLinks.forEach(link => {
-    const a = document.createElement('a');
-    a.href = link.href;
-    a.textContent = link.label;
-    a.className = 'block text-white hover:text-gray-300 transition';
-    menuPanel.appendChild(a);
+  // Set current date in the header
+  document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
   });
 
-  function toggleMenu(e) {
-    e.stopPropagation();
+  // Menu toggle function
+  function toggleMenu() {
+    const menuPanel = document.getElementById('menuPanel');
     menuPanel.classList.toggle('hidden');
+    
+    if (!menuPanel.classList.contains('hidden')) {
+      menuPanel.classList.add('animate-fadeIn');
+    }
   }
 
   // Close menu when clicking outside
-  document.addEventListener('click', (e) => {
-    if (
-      !menuPanel.contains(e.target) &&
-      !menuButton.contains(e.target)
-    ) {
+  document.addEventListener('click', function(event) {
+    const menuPanel = document.getElementById('menuPanel');
+    const menuButton = document.querySelector('button[onclick="toggleMenu()"]');
+    
+    if (!menuPanel.classList.contains('hidden') && 
+        !menuPanel.contains(event.target) && 
+        !menuButton.contains(event.target)) {
       menuPanel.classList.add('hidden');
+    }
+  });
+
+  // Close menu when pressing Escape key
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+      const menuPanel = document.getElementById('menuPanel');
+      if (!menuPanel.classList.contains('hidden')) {
+        menuPanel.classList.add('hidden');
+      }
     }
   });
 </script>
