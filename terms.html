@@ -24,6 +24,50 @@
       transform: translateY(-5px);
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     }
+
+    /* Robot Styles */
+    #robot-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 999;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    #robot-container:hover {
+      transform: scale(1.1);
+    }
+    
+    #robot-container.reading {
+      animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    .robot-tooltip {
+      position: absolute;
+      bottom: 100%;
+      right: 0;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 10px;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    
+    #robot-container:hover .robot-tooltip {
+      opacity: 1;
+    }
   </style>
 </head>
 <body class="bg-gradient-to-br from-gray-900 to-black min-h-screen text-white">
@@ -193,8 +237,14 @@
   </div>
 </main>
 
-<script>
+<!-- Fixed Robot Image -->
+<div id="robot-container">
+  <div class="robot-tooltip">Click to hear terms</div>
+  <img src="Robot.jpg" alt="Reading Robot" class="w-16 h-16 rounded-full border-2 border-blue-500 shadow-lg">
+  <div id="robot-status" class="absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full hidden"></div>
+</div>
 
+<script>
 // Menu toggle function - updated to handle scroll closing
 function toggleMenu() {
   const menuPanel = document.getElementById('menuPanel');
@@ -250,44 +300,129 @@ document.querySelectorAll('#menuPanel a').forEach(link => {
   });
 });
 
-  // Set current date in the header
-  document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
-  });
+// Set current date in the header
+document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', { 
+  year: 'numeric', 
+  month: 'long', 
+  day: 'numeric' 
+});
 
-  // Menu toggle function
-  function toggleMenu() {
-    const menuPanel = document.getElementById('menuPanel');
-    menuPanel.classList.toggle('hidden');
+// Text-to-Speech Robot Functionality
+let isReading = false;
+let speechSynthesis = window.speechSynthesis;
+let currentUtterance = null;
+
+// Function to get all text content from the Terms & Conditions sections
+function getAllTermsText() {
+  const sections = document.querySelectorAll('main section');
+  let fullText = "Terms and Conditions for BigTree Shopping Cart. ";
+  fullText += "Last updated: " + document.getElementById('currentDate').textContent + ". ";
+  
+  sections.forEach(section => {
+    // Get heading text
+    const heading = section.querySelector('h2');
+    if (heading) {
+      fullText += heading.textContent.replace(/[\n\r]+|[\s]{2,}/g, ' ').trim() + ". ";
+    }
     
-    if (!menuPanel.classList.contains('hidden')) {
-      menuPanel.classList.add('animate-fadeIn');
+    // Get paragraph text
+    const paragraphs = section.querySelectorAll('p');
+    paragraphs.forEach(p => {
+      if (p.textContent) {
+        fullText += p.textContent.replace(/[\n\r]+|[\s]{2,}/g, ' ').trim() + ". ";
+      }
+    });
+    
+    // Get list items if any
+    const listItems = section.querySelectorAll('div.flex.items-start');
+    listItems.forEach(item => {
+      const text = item.textContent.replace(/[\n\r]+|[\s]{2,}/g, ' ').trim();
+      if (text) {
+        fullText += text + ". ";
+      }
+    });
+  });
+  
+  return fullText;
+}
+
+// Function to start/stop reading
+function toggleReading() {
+  const robotContainer = document.getElementById('robot-container');
+  const robotStatus = document.getElementById('robot-status');
+  const tooltip = document.querySelector('.robot-tooltip');
+  
+  if (!isReading) {
+    // Start reading
+    isReading = true;
+    robotContainer.classList.add('reading');
+    robotStatus.classList.remove('hidden');
+    robotStatus.classList.remove('bg-red-500');
+    robotStatus.classList.add('bg-green-500');
+    tooltip.textContent = 'Click to stop reading';
+    
+    // Get text and speak it
+    const textToRead = getAllTermsText();
+    currentUtterance = new SpeechSynthesisUtterance(textToRead);
+    
+    // Set voice properties
+    currentUtterance.rate = 1.0;
+    currentUtterance.pitch = 1.0;
+    currentUtterance.volume = 1.0;
+    
+    // When speech ends
+    currentUtterance.onend = function() {
+      isReading = false;
+      robotContainer.classList.remove('reading');
+      robotStatus.classList.add('hidden');
+      tooltip.textContent = 'Click to hear terms';
+    };
+    
+    // When speech is cancelled
+    currentUtterance.onerror = function() {
+      isReading = false;
+      robotContainer.classList.remove('reading');
+      robotStatus.classList.add('hidden');
+      tooltip.textContent = 'Click to hear terms';
+    };
+    
+    // Speak the text
+    speechSynthesis.speak(currentUtterance);
+  } else {
+    // Stop reading
+    isReading = false;
+    robotContainer.classList.remove('reading');
+    robotStatus.classList.add('hidden');
+    tooltip.textContent = 'Click to hear terms';
+    
+    if (speechSynthesis.speaking) {
+      speechSynthesis.cancel();
     }
   }
+}
 
-  // Close menu when clicking outside
-  document.addEventListener('click', function(event) {
-    const menuPanel = document.getElementById('menuPanel');
-    const menuButton = document.querySelector('button[onclick="toggleMenu()"]');
-    
-    if (!menuPanel.classList.contains('hidden') && 
-        !menuPanel.contains(event.target) && 
-        !menuButton.contains(event.target)) {
-      menuPanel.classList.add('hidden');
-    }
-  });
+// Add click event to robot
+document.getElementById('robot-container').addEventListener('click', toggleReading);
 
-  // Close menu when pressing Escape key
-  document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape') {
-      const menuPanel = document.getElementById('menuPanel');
-      if (!menuPanel.classList.contains('hidden')) {
-        menuPanel.classList.add('hidden');
-      }
-    }
-  });
+// Stop reading if page is hidden (tab switch)
+document.addEventListener('visibilitychange', function() {
+  if (document.hidden && isReading) {
+    toggleReading();
+  }
+});
+
+// Prevent image from loading error
+document.querySelector('#robot-container img').addEventListener('error', function() {
+  this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDE0QzEzLjY1NjkgMTQgMTUgMTIuNjU2OSAxNSAxMUMxNSA5LjM0MzE1IDEzLjY1NjkgOCAxMiA4QzEwLjM0MzEgOCA5IDkuMzQzMTUgOSAxMUM5IDEyLjY1NjkgMTAuMzQzMSAxNCAxMiAxNFoiIGZpbGw9IiMxMGI5ODEiLz4KPHBhdGggZD0iTTEyIDJDNi40NzcgMiAyIDYuNDc3IDIgMTJDMiAxNy41MjMgNi40NzcgMjIgMTIgMjJDMTcuNTIzIDIyIDIyIDE3LjUyMyAyMiAxMkMyMiA2LjQ3NyAxNy41MjMgMiAxMiAyWk0xMiAyMEM3LjU4OSAyMCA0IDE2LjQxMSA0IDEyQzQgOC41ODggNi4yNDYgNS43MDggOS4yMjkgNC42MThMOS42MiA3LjAyOEM4LjQ2NSA3LjU2MyA3LjY4NSA4LjcxMiA3LjUgMTBIMTQuNUMxNC4zMTUgOC43MTIgMTMuNTM1IDcuNTYzIDEyLjM4IDcuMDI4TDEyLjc3MSA0LjYxOEMxNS43NTQgNS43MDggMTggOC41ODggMTggMTJDMTggMTYuNDExIDE0LjQxMSAyMCAxMiAyMFoiIGZpbGw9IiMxMGI5ODEiLz4KPC9zdmc+';
+  this.alt = 'Robot Assistant';
+});
+
+// Stop all speech when leaving the page
+window.addEventListener('beforeunload', function() {
+  if (speechSynthesis.speaking) {
+    speechSynthesis.cancel();
+  }
+});
 </script>
 
 </body>
