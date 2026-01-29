@@ -51,12 +51,13 @@
 
 <header class="flex items-center justify-between px-6 py-4 sticky top-0 bg-gray-900/90 backdrop-blur-md z-50 border-b border-gray-800">
   <div class="flex items-center space-x-3">
-    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center">
-      <span class="text-white font-bold text-lg">B</span>
-    </div>
+    <div class="flex items-center space-x-2">
+    <img src="BigTree_logo.png" class="w-8 h-8" alt="App Logo">
+    
+  </div>
     <div>
       <span class="font-bold text-xl">BigTree Shopping Cart</span>
-      <div class="text-xs text-gray-400">Tutorials & Guides</div>
+      <div class="text-xs text-gray-400">Tutorials</div>
     </div>
   </div>
 
@@ -64,7 +65,7 @@
 </header>
 
 <!-- Menu Panel -->
-<div id="menuPanel" class="hidden absolute top-16 right-4 w-64 z-50">
+<div id="menuPanel" class="hidden fixed top-16 right-4 w-64 z-50">
   <div class="bg-gray-800/95 backdrop-blur-md rounded-xl p-4 space-y-2 border border-gray-700 shadow-2xl">
     <a href="index.html" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50 transition">
       <i class="fas fa-home w-6 mr-3 text-gray-400"></i>
@@ -432,6 +433,62 @@
 </main>
 
 <script>
+
+// Menu toggle function - updated to handle scroll closing
+function toggleMenu() {
+  const menuPanel = document.getElementById('menuPanel');
+  menuPanel.classList.toggle('hidden');
+  
+  // If opening the menu, add scroll listener
+  if (!menuPanel.classList.contains('hidden')) {
+    window.addEventListener('scroll', closeMenuOnScroll);
+  } else {
+    window.removeEventListener('scroll', closeMenuOnScroll);
+  }
+}
+
+// Close menu when scrolling
+function closeMenuOnScroll() {
+  const menuPanel = document.getElementById('menuPanel');
+  if (!menuPanel.classList.contains('hidden')) {
+    menuPanel.classList.add('hidden');
+    window.removeEventListener('scroll', closeMenuOnScroll);
+  }
+}
+
+// Close menu when clicking outside - updated
+document.addEventListener('click', function(event) {
+  const menuPanel = document.getElementById('menuPanel');
+  const menuButton = document.querySelector('button[onclick="toggleMenu()"]');
+  
+  if (!menuPanel.classList.contains('hidden') && 
+      !menuPanel.contains(event.target) && 
+      !menuButton.contains(event.target)) {
+    menuPanel.classList.add('hidden');
+    window.removeEventListener('scroll', closeMenuOnScroll);
+  }
+});
+
+// Close menu when pressing Escape key - updated
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Escape') {
+    const menuPanel = document.getElementById('menuPanel');
+    if (!menuPanel.classList.contains('hidden')) {
+      menuPanel.classList.add('hidden');
+      window.removeEventListener('scroll', closeMenuOnScroll);
+    }
+  }
+});
+
+// Also close menu when clicking on any menu link
+document.querySelectorAll('#menuPanel a').forEach(link => {
+  link.addEventListener('click', function() {
+    const menuPanel = document.getElementById('menuPanel');
+    menuPanel.classList.add('hidden');
+    window.removeEventListener('scroll', closeMenuOnScroll);
+  });
+});
+
   // Initialize tutorials from localStorage or set defaults
   let tutorials = JSON.parse(localStorage.getItem('bigtree_tutorials')) || {
     'getting-started': [
