@@ -396,44 +396,68 @@ function getAllAboutText() {
 
 // Function to start/stop reading
 function toggleReading() {
-  if (!isSpeechSupported()) {
-    showNotification('Speech synthesis is not supported in your browser', true);
-    return;
-  }
-  
   const robotContainer = document.getElementById('robot-container');
   const robotStatus = document.getElementById('robot-status');
   const tooltip = document.querySelector('.robot-tooltip');
-  
+
   if (!isReading) {
-    // Start reading
     isReading = true;
     robotContainer.classList.add('reading');
     robotStatus.classList.remove('hidden');
     robotStatus.classList.remove('bg-red-500');
     robotStatus.classList.add('bg-green-500');
     tooltip.textContent = 'Click to stop reading';
-    
-    // Get text and speak it
+
     const textToRead = getAllAboutText();
+
+    // ✅ APK (Android WebView)
+    if (window.AndroidTTS) {
+      AndroidTTS.speak(textToRead);
+      return;
+    }
+
+    // ✅ Web browser fallback
+    if (!('speechSynthesis' in window)) {
+      showNotification('Speech synthesis not supported', true);
+      resetRobot();
+      return;
+    }
+
     currentUtterance = new SpeechSynthesisUtterance(textToRead);
-    
-    // Set voice properties for better mobile compatibility
-    currentUtterance.rate = 0.9; // Slightly slower for mobile
+    currentUtterance.rate = 0.9;
     currentUtterance.pitch = 1.0;
     currentUtterance.volume = 1.0;
-    
-    // Try to get a voice that works on mobile
-    const voices = speechSynthesis.getVoices();
-    if (voices.length > 0) {
-      // Prefer English voices
-      const englishVoice = voices.find(voice => voice.lang.startsWith('en-'));
-      if (englishVoice) {
-        currentUtterance.voice = englishVoice;
-      } else {
-        currentUtterance.voice = voices[0];
-      }
-    }
+
+    currentUtterance.onend = resetRobot;
+    currentUtterance.onerror = resetRobot;
+
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(currentUtterance);
+
+  } else {
+    stopReading();
+  }
+}
+
+function stopReading() {
+  isReading = false;
+  resetRobot();
+
+  if (window.AndroidTTS) {
+    AndroidTTS.stop();
+  } else if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
+
+  showNotification('Stopped reading');
+}
+
+function resetRobot() {
+  isReading = false;
+  document.getElementById('robot-container').classList.remove('reading');
+  document.getElementById('robot-status').classList.add('hidden');
+  document.querySelector('.robot-tooltip').textContent = 'Click to hear about us';
+  }
     
     // When speech ends
     currentUtterance.onend = function() {
@@ -527,3 +551,4 @@ document.head.appendChild(style);
 
 </body>
 </html>
+
