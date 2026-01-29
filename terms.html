@@ -44,7 +44,7 @@
 </header>
 
 <!-- Menu Panel -->
-<div id="menuPanel" class="hidden absolute top-16 right-4 w-64 z-50">
+<div id="menuPanel" class="hidden fixed top-16 right-4 w-64 z-50">
   <div class="bg-gray-800/95 backdrop-blur-md rounded-xl p-4 space-y-2 border border-gray-700 shadow-2xl">
     <a href="index.html" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50 transition">
       <i class="fas fa-home w-6 mr-3 text-gray-400"></i>
@@ -194,6 +194,62 @@
 </main>
 
 <script>
+
+// Menu toggle function - updated to handle scroll closing
+function toggleMenu() {
+  const menuPanel = document.getElementById('menuPanel');
+  menuPanel.classList.toggle('hidden');
+  
+  // If opening the menu, add scroll listener
+  if (!menuPanel.classList.contains('hidden')) {
+    window.addEventListener('scroll', closeMenuOnScroll);
+  } else {
+    window.removeEventListener('scroll', closeMenuOnScroll);
+  }
+}
+
+// Close menu when scrolling
+function closeMenuOnScroll() {
+  const menuPanel = document.getElementById('menuPanel');
+  if (!menuPanel.classList.contains('hidden')) {
+    menuPanel.classList.add('hidden');
+    window.removeEventListener('scroll', closeMenuOnScroll);
+  }
+}
+
+// Close menu when clicking outside - updated
+document.addEventListener('click', function(event) {
+  const menuPanel = document.getElementById('menuPanel');
+  const menuButton = document.querySelector('button[onclick="toggleMenu()"]');
+  
+  if (!menuPanel.classList.contains('hidden') && 
+      !menuPanel.contains(event.target) && 
+      !menuButton.contains(event.target)) {
+    menuPanel.classList.add('hidden');
+    window.removeEventListener('scroll', closeMenuOnScroll);
+  }
+});
+
+// Close menu when pressing Escape key - updated
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Escape') {
+    const menuPanel = document.getElementById('menuPanel');
+    if (!menuPanel.classList.contains('hidden')) {
+      menuPanel.classList.add('hidden');
+      window.removeEventListener('scroll', closeMenuOnScroll);
+    }
+  }
+});
+
+// Also close menu when clicking on any menu link
+document.querySelectorAll('#menuPanel a').forEach(link => {
+  link.addEventListener('click', function() {
+    const menuPanel = document.getElementById('menuPanel');
+    menuPanel.classList.add('hidden');
+    window.removeEventListener('scroll', closeMenuOnScroll);
+  });
+});
+
   // Set current date in the header
   document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', { 
     year: 'numeric', 
