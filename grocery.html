@@ -2,112 +2,696 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Grocery List</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grocery List - BigTree Shopping Cart</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    .category-food { background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.05)); }
+    .category-clothes { background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05)); }
+    .category-other { background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(168, 85, 247, 0.05)); }
+    
+    .fade-in { animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    
+    .slide-in { animation: slideIn 0.3s ease; }
+    @keyframes slideIn { from { transform: translateX(-20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    
+    .print-section { background: white; color: black; padding: 20px; }
+  </style>
 </head>
 <body class="bg-gradient-to-br from-gray-900 to-black min-h-screen text-white">
 
-<!-- Header -->
-<header class="flex items-center justify-between px-4 py-3">
-  <div class="flex items-center space-x-2">
+<header class="flex items-center justify-between px-6 py-4 sticky top-0 bg-gray-900/90 backdrop-blur-md z-50 border-b border-gray-800">
+  <div class="flex items-center space-x-3">
+    <div class="flex items-center space-x-2">
     <img src="BigTree_logo.png" class="w-8 h-8" alt="App Logo">
-    <span class="font-semibold text-lg">BigTree Shopping Cart App</span>
+    
+  </div>
+    <div>
+      <span class="font-bold text-xl">BigTree Shopping Cart</span>
+      <div class="text-xs text-gray-400">Grocery Lists</div>
+    </div>
   </div>
 
-  <button onclick="toggleMenu(event)" class="text-2xl">☰</button>
+  <button onclick="toggleMenu(event)" class="text-2xl hover:text-green-400 transition-colors p-2">☰</button>
 </header>
 
-<!-- Menu -->
-<div id="menuPanel" class="hidden px-4 pb-4">
-  <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 space-y-3">
-    <a href="index.html" class="block hover:text-gray-300">Home</a>
-    <a href="about.html" class="block hover:text-gray-300">About Us</a>
-    <a href="terms.html" class="block hover:text-gray-300">Terms & Conditions</a>
-    <a href="tutor.html" class="block hover:text-gray-300">Tutorials</a>
+<!-- Menu Panel -->
+<div id="menuPanel" class="hidden absolute top-16 right-4 w-64 z-50">
+  <div class="bg-gray-800/95 backdrop-blur-md rounded-xl p-4 space-y-2 border border-gray-700 shadow-2xl">
+    <a href="index.html" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50 transition">
+      <i class="fas fa-home w-6 mr-3 text-gray-400"></i>
+      <span>Home</span>
+    </a>
+    <a href="grocery.html" class="flex items-center p-3 rounded-lg bg-green-900/30 text-green-300 border border-green-800/30">
+      <i class="fas fa-file-contract w-6 mr-3"></i>
+      <span class="font-medium">Grocery List</span>
+    </a>
+    <a href="about.html" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50 transition">
+      <i class="fas fa-info-circle w-6 mr-3 text-gray-400"></i>
+      <span>About Us</span>
+    </a>
+    <a href="terms.html" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50 transition">
+      <i class="fas fa-file-contract w-6 mr-3 text-gray-400"></i>
+      <span>Terms & Conditions</span>
+    </a>
+    <a href="tutor.html" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50 transition">
+      <i class="fas fa-graduation-cap w-6 mr-3 text-gray-400"></i>
+      <span>Tutorials</span>
+    </a>
   </div>
 </div>
 
-<!-- Content -->
-<main class="px-4 pt-4">
-  <h1 class="text-xl font-semibold mb-4">Create a grocery list that you'll user at your convenience.</h1>
-
-  <!-- Grocery List -->
-<div class="bg-white/10 backdrop-blur-md rounded-xl p-4 space-y-4">
-
-  <!-- Currency Selector -->
-  <div>
-    <label class="text-sm font-semibold">Currency</label>
-    <select id="currencySelect"
-      class="w-full mt-1 p-2 rounded bg-black/40 border border-white/20">
-      <option value="ZAR">Rand (ZAR)</option>
-      <option value="USD">US Dollar (USD)</option>
-      <option value="EUR">Euro (EUR)</option>
-      <option value="GBP">Pound (GBP)</option>
-    </select>
+<!-- Main Content -->
+<main class="px-4 sm:px-6 pt-6 pb-20 max-w-6xl mx-auto">
+  <!-- Header Section -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold mb-2"><u>Grocery List Manager</u></h1>
+    <p class="text-gray-400">Create and manage your shopping lists by category. No prices needed - just pure organization!</p>
   </div>
 
-  <!-- Add Item -->
-  <input id="itemName"
-    class="w-full p-2 rounded bg-black/40 border border-white/20"
-    placeholder="Item name">
-
-  <input id="itemPrice" type="number"
-    class="w-full p-2 rounded bg-black/40 border border-white/20"
-    placeholder="Price">
-
-  <button onclick="addItem()"
-    class="w-full bg-green-600 hover:bg-green-700 transition rounded p-2 font-semibold">
-    Add Item
-  </button>
-
-  <!-- List -->
-  <ul id="groceryList" class="space-y-2"></ul>
-
-  <!-- Clear -->
-  <button onclick="clearList()"
-    class="w-full bg-red-600 hover:bg-red-700 transition rounded p-2 font-semibold">
-    Clear List
-  </button>
-
-</div>
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Left Column: Add Items -->
+    <div class="lg:col-span-1">
+      <div class="bg-gray-800/50 rounded-2xl p-6 border border-gray-700">
+        <h2 class="text-xl font-bold mb-4 text-green-300">
+          <i class="fas fa-plus-circle mr-2"></i>Add New Item
+        </h2>
+        
+        <div class="space-y-4">
+          <!-- Item Name Input -->
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">
+              <i class="fas fa-tag mr-2"></i>Item Name
+            </label>
+            <input 
+              type="text" 
+              id="itemName" 
+              placeholder="e.g., Milk, Bread, Eggs..." 
+              class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            >
+          </div>
+          
+          <!-- Category Selection -->
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">
+              <i class="fas fa-layer-group mr-2"></i>Category
+            </label>
+            <div class="grid grid-cols-3 gap-2 mb-4">
+              <button onclick="selectCategory('food')" id="cat-food" 
+                class="category-food py-3 rounded-lg border border-green-800/30 text-center hover:bg-green-900/20 transition">
+                <i class="fas fa-utensils mb-1"></i>
+                <div class="text-sm font-medium">Food</div>
+              </button>
+              <button onclick="selectCategory('clothes')" id="cat-clothes" 
+                class="category-clothes py-3 rounded-lg border border-blue-800/30 text-center hover:bg-blue-900/20 transition">
+                <i class="fas fa-tshirt mb-1"></i>
+                <div class="text-sm font-medium">Clothes</div>
+              </button>
+              <button onclick="selectCategory('other')" id="cat-other" 
+                class="category-other py-3 rounded-lg border border-purple-800/30 text-center hover:bg-purple-900/20 transition">
+                <i class="fas fa-box-open mb-1"></i>
+                <div class="text-sm font-medium">Other</div>
+              </button>
+            </div>
+          </div>
+          
+          <!-- Quantity Input -->
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">
+              <i class="fas fa-hashtag mr-2"></i>Quantity
+            </label>
+            <input 
+              type="number" 
+              id="itemQuantity" 
+              min="1" 
+              value="1" 
+              class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            >
+          </div>
+          
+          <!-- Add Button -->
+          <button onclick="addItem()" 
+            class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 transform hover:-translate-y-0.5">
+            <i class="fas fa-plus mr-2"></i>Add to List
+          </button>
+          
+          <!-- Quick Add Presets -->
+          <div class="pt-4 border-t border-gray-700">
+            <h3 class="text-sm font-medium text-gray-300 mb-3">Quick Add Presets</h3>
+            <div class="flex flex-wrap gap-2">
+              <button onclick="quickAdd('Milk', 'food')" class="text-sm bg-gray-900 hover:bg-gray-800 px-3 py-1.5 rounded-lg transition">Milk</button>
+              <button onclick="quickAdd('Bread', 'food')" class="text-sm bg-gray-900 hover:bg-gray-800 px-3 py-1.5 rounded-lg transition">Bread</button>
+              <button onclick="quickAdd('Eggs', 'food')" class="text-sm bg-gray-900 hover:bg-gray-800 px-3 py-1.5 rounded-lg transition">Eggs</button>
+              <button onclick="quickAdd('Shirt', 'clothes')" class="text-sm bg-gray-900 hover:bg-gray-800 px-3 py-1.5 rounded-lg transition">Shirt</button>
+              <button onclick="quickAdd('Soap', 'other')" class="text-sm bg-gray-900 hover:bg-gray-800 px-3 py-1.5 rounded-lg transition">Soap</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Right Column: Grocery List Display -->
+    <div class="lg:col-span-2">
+      <!-- Action Buttons -->
+      <div class="flex flex-wrap gap-3 mb-6">
+        <button onclick="printPDF()" 
+          class="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium py-2.5 px-5 rounded-lg transition flex items-center">
+          <i class="fas fa-print mr-2"></i>Print PDF
+        </button>
+        <button onclick="clearAllItems()" 
+          class="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white font-medium py-2.5 px-5 rounded-lg transition flex items-center">
+          <i class="fas fa-trash mr-2"></i>Clear All
+        </button>
+        <button onclick="saveList()" 
+          class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-medium py-2.5 px-5 rounded-lg transition flex items-center">
+          <i class="fas fa-save mr-2"></i>Save List
+        </button>
+        <button onclick="loadList()" 
+          class="bg-gradient-to-r from-yellow-600 to-amber-600 hover:from-yellow-700 hover:to-amber-700 text-white font-medium py-2.5 px-5 rounded-lg transition flex items-center">
+          <i class="fas fa-upload mr-2"></i>Load List
+        </button>
+      </div>
+      
+      <!-- Grocery List Display -->
+      <div id="groceryList" class="space-y-6">
+        <!-- Food Category -->
+        <div id="category-food" class="category-food rounded-2xl p-6 border border-green-800/30">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center">
+              <i class="fas fa-utensils text-green-400 text-xl mr-3"></i>
+              <h2 class="text-xl font-bold text-white">Food Items</h2>
+              <span id="food-count" class="ml-3 bg-green-900/50 text-green-300 text-sm px-3 py-1 rounded-full">0 items</span>
+            </div>
+            <button onclick="clearCategory('food')" class="text-red-400 hover:text-red-300 text-sm">
+              <i class="fas fa-trash mr-1"></i> Clear All
+            </button>
+          </div>
+          <div id="food-items" class="space-y-2">
+            <!-- Food items will be inserted here -->
+            <div class="text-gray-500 text-center py-4">
+              <i class="fas fa-carrot text-2xl mb-2"></i>
+              <p>No food items added yet</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Clothes Category -->
+        <div id="category-clothes" class="category-clothes rounded-2xl p-6 border border-blue-800/30">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center">
+              <i class="fas fa-tshirt text-blue-400 text-xl mr-3"></i>
+              <h2 class="text-xl font-bold text-white">Clothes</h2>
+              <span id="clothes-count" class="ml-3 bg-blue-900/50 text-blue-300 text-sm px-3 py-1 rounded-full">0 items</span>
+            </div>
+            <button onclick="clearCategory('clothes')" class="text-red-400 hover:text-red-300 text-sm">
+              <i class="fas fa-trash mr-1"></i> Clear All
+            </button>
+          </div>
+          <div id="clothes-items" class="space-y-2">
+            <!-- Clothes items will be inserted here -->
+            <div class="text-gray-500 text-center py-4">
+              <i class="fas fa-tshirt text-2xl mb-2"></i>
+              <p>No clothes items added yet</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Other Category -->
+        <div id="category-other" class="category-other rounded-2xl p-6 border border-purple-800/30">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center">
+              <i class="fas fa-box-open text-purple-400 text-xl mr-3"></i>
+              <h2 class="text-xl font-bold text-white">Other Items</h2>
+              <span id="other-count" class="ml-3 bg-purple-900/50 text-purple-300 text-sm px-3 py-1 rounded-full">0 items</span>
+            </div>
+            <button onclick="clearCategory('other')" class="text-red-400 hover:text-red-300 text-sm">
+              <i class="fas fa-trash mr-1"></i> Clear All
+            </button>
+          </div>
+          <div id="other-items" class="space-y-2">
+            <!-- Other items will be inserted here -->
+            <div class="text-gray-500 text-center py-4">
+              <i class="fas fa-box text-2xl mb-2"></i>
+              <p>No other items added yet</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </main>
 
+<!-- Hidden div for printing -->
+<div id="printContent" class="hidden print-section"></div>
+
 <script>
-  function toggleMenu() {
-    document.getElementById('menuPanel').classList.toggle('hidden');
-  }
+  // Global variables
+  let groceryItems = JSON.parse(localStorage.getItem('bigtree_grocery_list')) || [];
+  let selectedCategory = 'food';
 
-const menuPanel = document.getElementById('menuPanel');
-  const menuButton = document.getElementById('menuButton');
-
-  // Build menu
-  menuLinks.forEach(link => {
-    const a = document.createElement('a');
-    a.href = link.href;
-    a.textContent = link.label;
-    a.className = 'block text-white hover:text-gray-300 transition';
-    menuPanel.appendChild(a);
+  // Initialize on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    // Select food category by default
+    selectCategory('food');
+    // Load saved items
+    if (groceryItems.length > 0) {
+      renderAllItems();
+    }
   });
 
-  function toggleMenu(e) {
-    e.stopPropagation();
+  // Category selection
+  function selectCategory(category) {
+    selectedCategory = category;
+    
+    // Reset all category buttons
+    ['food', 'clothes', 'other'].forEach(cat => {
+      const btn = document.getElementById(`cat-${cat}`);
+      btn.classList.remove('ring-2', 'ring-green-500');
+    });
+    
+    // Highlight selected category
+    const selectedBtn = document.getElementById(`cat-${category}`);
+    selectedBtn.classList.add('ring-2', 'ring-green-500');
+  }
+
+  // Add item function
+  function addItem() {
+    const nameInput = document.getElementById('itemName');
+    const quantityInput = document.getElementById('itemQuantity');
+    
+    const name = nameInput.value.trim();
+    const quantity = parseInt(quantityInput.value) || 1;
+    
+    if (!name) {
+      alert('Please enter an item name');
+      nameInput.focus();
+      return;
+    }
+    
+    // Create new item object
+    const newItem = {
+      id: Date.now(),
+      name: name,
+      category: selectedCategory,
+      quantity: quantity,
+      addedDate: new Date().toLocaleString()
+    };
+    
+    // Add to array
+    groceryItems.push(newItem);
+    
+    // Save to localStorage
+    saveToLocalStorage();
+    
+    // Render the item
+    renderItem(newItem);
+    
+    // Reset form
+    nameInput.value = '';
+    quantityInput.value = '1';
+    nameInput.focus();
+    
+    // Show success message
+    showNotification(`Added "${name}" to ${selectedCategory} list`);
+  }
+
+  // Quick add function
+  function quickAdd(name, category) {
+    selectCategory(category);
+    document.getElementById('itemName').value = name;
+    document.getElementById('itemQuantity').value = '1';
+    setTimeout(() => addItem(), 100);
+  }
+
+  // Render a single item
+  function renderItem(item) {
+    const container = document.getElementById(`${item.category}-items`);
+    const emptyMsg = container.querySelector('.text-gray-500');
+    
+    // Remove empty message if it exists
+    if (emptyMsg) {
+      emptyMsg.remove();
+    }
+    
+    // Create item element
+    const itemElement = document.createElement('div');
+    itemElement.className = 'fade-in bg-gray-900/50 rounded-lg p-4 flex items-center justify-between border border-gray-700';
+    itemElement.innerHTML = `
+      <div class="flex items-center">
+        <div class="w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center mr-3">
+          <i class="fas fa-${getCategoryIcon(item.category)} text-${getCategoryColor(item.category)}-400"></i>
+        </div>
+        <div>
+          <div class="font-medium">${item.name}</div>
+          <div class="text-sm text-gray-400">
+            Quantity: ${item.quantity} • Added: ${item.addedDate}
+          </div>
+        </div>
+      </div>
+      <button onclick="removeItem(${item.id})" class="text-red-400 hover:text-red-300 p-2">
+        <i class="fas fa-trash"></i>
+      </button>
+    `;
+    
+    // Add to container
+    container.appendChild(itemElement);
+    
+    // Update count
+    updateCategoryCount(item.category);
+  }
+
+  // Render all items
+  function renderAllItems() {
+    // Clear all containers first
+    ['food', 'clothes', 'other'].forEach(category => {
+      const container = document.getElementById(`${category}-items`);
+      container.innerHTML = `<div class="text-gray-500 text-center py-4">
+        <i class="fas fa-${getCategoryIcon(category)} text-2xl mb-2"></i>
+        <p>No ${category} items added yet</p>
+      </div>`;
+    });
+    
+    // Render each item
+    groceryItems.forEach(item => renderItem(item));
+  }
+
+  // Remove item function
+  function removeItem(id) {
+    // Remove from array
+    groceryItems = groceryItems.filter(item => item.id !== id);
+    
+    // Save to localStorage
+    saveToLocalStorage();
+    
+    // Re-render all items
+    renderAllItems();
+    
+    showNotification('Item removed from list');
+  }
+
+  // Clear category function
+  function clearCategory(category) {
+    if (confirm(`Are you sure you want to clear all ${category} items?`)) {
+      groceryItems = groceryItems.filter(item => item.category !== category);
+      saveToLocalStorage();
+      renderAllItems();
+      showNotification(`All ${category} items cleared`);
+    }
+  }
+
+  // Clear all items
+  function clearAllItems() {
+    if (groceryItems.length === 0) {
+      alert('Your grocery list is already empty');
+      return;
+    }
+    
+    if (confirm('Are you sure you want to clear your entire grocery list?')) {
+      groceryItems = [];
+      saveToLocalStorage();
+      renderAllItems();
+      showNotification('All items cleared');
+    }
+  }
+
+  // Save list function
+  function saveList() {
+    saveToLocalStorage();
+    showNotification('Grocery list saved successfully!');
+  }
+
+  // Load list function
+  function loadList() {
+    groceryItems = JSON.parse(localStorage.getItem('bigtree_grocery_list')) || [];
+    renderAllItems();
+    showNotification('Grocery list loaded successfully!');
+  }
+
+  // Update category count
+  function updateCategoryCount(category) {
+    const count = groceryItems.filter(item => item.category === category).length;
+    const countElement = document.getElementById(`${category}-count`);
+    countElement.textContent = `${count} ${count === 1 ? 'item' : 'items'}`;
+  }
+
+  // Get category icon
+  function getCategoryIcon(category) {
+    const icons = {
+      food: 'utensils',
+      clothes: 'tshirt',
+      other: 'box-open'
+    };
+    return icons[category] || 'box-open';
+  }
+
+  // Get category color
+  function getCategoryColor(category) {
+    const colors = {
+      food: 'green',
+      clothes: 'blue',
+      other: 'purple'
+    };
+    return colors[category] || 'purple';
+  }
+
+  // Save to localStorage
+  function saveToLocalStorage() {
+    localStorage.setItem('bigtree_grocery_list', JSON.stringify(groceryItems));
+  }
+
+  // Show notification
+  function showNotification(message) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = 'fixed bottom-4 right-4 bg-green-600 text-white px-4 py-3 rounded-lg shadow-lg z-50 fade-in';
+    notification.textContent = message;
+    
+    // Add to body
+    document.body.appendChild(notification);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+      notification.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+      setTimeout(() => notification.remove(), 300);
+    }, 3000);
+  }
+
+  // Print PDF function - UPDATED WITH ACTUAL LOGO IMAGE
+  function printPDF() {
+    if (groceryItems.length === 0) {
+      alert('Your grocery list is empty. Add some items first!');
+      return;
+    }
+    
+    // Get the correct path for the logo
+    const currentUrl = window.location.href;
+    const baseUrl = currentUrl.substring(0, currentUrl.lastIndexOf('/') + 1);
+    const logoUrl = baseUrl + 'BigTree_logo.png';
+    
+    // Group items by category
+    const groupedItems = {
+      food: groceryItems.filter(item => item.category === 'food'),
+      clothes: groceryItems.filter(item => item.category === 'clothes'),
+      other: groceryItems.filter(item => item.category === 'other')
+    };
+    
+    // Create print content
+    const printDiv = document.getElementById('printContent');
+    let html = `
+      <div style="max-width: 800px; margin: 0 auto; font-family: Arial, sans-serif;">
+        <!-- Header with Logo -->
+        <div style="text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #22c55e;">
+          <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+            <img src="Bigtree_logo.png" style="width: 80px; height: 80px; margin-right: 5px; object-fit: contain;" alt="BigTree Logo">
+            <div style="text-align: left;">
+              <h1 style="color: #22c55e; font-size: 28px; margin: 0; font-weight: bold;"><u>BigTree Shopping Cart</u></h1>
+              
+            </div>
+          </div>
+          <h2 style="font-size: 24px; margin: 10px 0 5px 0; color: #333;">Smart Grocery List</h2>
+          <p style="color: #666; margin: 0; font-size: 14px;">Generated on: ${new Date().toLocaleString()}</p>
+        </div>
+    `;
+    
+    // Add each category section
+    ['food', 'clothes', 'other'].forEach(category => {
+      if (groupedItems[category].length > 0) {
+        const categoryTitle = category.charAt(0).toUpperCase() + category.slice(1);
+        const categoryColor = category === 'food' ? '#22c55e' : category === 'clothes' ? '#3b82f6' : '#a855f7';
+        const categoryIcon = category === 'food' ? '🍎' : category === 'clothes' ? '👕' : '📦';
+        
+        html += `
+          <div style="margin-bottom: 25px; border-left: 4px solid ${categoryColor}; padding-left: 15px; page-break-inside: avoid;">
+            <h3 style="font-size: 20px; color: ${categoryColor}; margin-bottom: 15px; display: flex; align-items: center;">
+              <span style="margin-right: 10px; font-size: 24px;">${categoryIcon}</span>
+              ${categoryTitle} Items (${groupedItems[category].length})
+            </h3>
+            <table style="width: 100%; border-collapse: collapse;">
+        `;
+        
+        groupedItems[category].forEach((item, index) => {
+          html += `
+            <tr style="border-bottom: 1px solid #eee; page-break-inside: avoid;">
+              <td style="padding: 10px; width: 40px; vertical-align: top; color: #666;">${index + 1}.</td>
+              <td style="padding: 10px; vertical-align: top; font-weight: 500;">${item.name}</td>
+              <td style="padding: 10px; text-align: right; vertical-align: top; color: #666;">
+                Quantity: <span style="font-weight: bold; color: #333;">${item.quantity}</span>
+              </td>
+            </tr>
+          `;
+        });
+        
+        html += `</table></div>`;
+      }
+    });
+    
+    // Add totals and footer
+    const totalItems = groceryItems.length;
+    const today = new Date();
+    const formattedDate = today.toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+    
+    html += `
+      <!-- Summary Section -->
+      <div style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #333; page-break-inside: avoid;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <div>
+            <div style="font-size: 18px; font-weight: bold; color: #333;">
+              Total Items: <span style="color: #22c55e;">${totalItems}</span>
+            </div>
+            <div style="color: #666; font-size: 14px; margin-top: 5px;">
+              ${formattedDate}
+            </div>
+          </div>
+        </div>
+        
+        <!-- Footer -->
+        <div style="color: #666; font-size: 15px; margin-top: 30px; padding-top: 15px; border-top: 1px solid #eee; text-align: center;">
+          <p>Thank you for using BigTree Shopping Cart!</p>
+          <p>This list was generated from your organized grocery list.</p>
+          <p style="margin-top: 15px; font-style: italic;">
+            "Smart shopping made simple"
+          </p>
+          <div style="text-align: center;">
+            <img src="${logoUrl}" style="width: 120px; height: 100px; object-fit: contain; margin: 0 auto 10px;" alt="BigTree Logo">
+            <div style="font-size: 15px; color: #666;"><strong>BigTree Shopping Cart</strong></div>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    html += `</div>`;
+    printDiv.innerHTML = html;
+    
+    // Create print window
+    const printWindow = window.open('', '_blank', 'width=800,height=600');
+    
+    // Write HTML to print window
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>BigTree Grocery List</title>
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+            body { 
+              font-family: 'Inter', Arial, sans-serif; 
+              margin: 40px; 
+              color: #333;
+              line-height: 1.5;
+            }
+            @media print {
+              body { margin: 20px; }
+              @page {
+                margin: 0.5in;
+                size: A4;
+              }
+              .no-print { display: none; }
+            }
+            h1, h2, h3 { font-family: 'Inter', sans-serif; }
+            table { width: 100%; }
+            .header-logo {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-bottom: 20px;
+            }
+            .footer-note {
+              text-align: center;
+              margin-top: 40px;
+              font-size: 12px;
+              color: #666;
+            }
+          </style>
+        </head>
+        <body>
+          ${html}
+          <div class="footer-note no-print" style="margin-top: 40px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+            <p>Click the print button in your browser or press Ctrl+P to print this list.</p>
+            <button onclick="window.print()" style="background: #22c55e; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px;">
+              🖨️ Print This List
+            </button>
+          </div>
+          <script>
+            // Auto-trigger print dialog after content loads
+            window.onload = function() {
+              setTimeout(function() {
+                window.print();
+              }, 500);
+            };
+            // Close window after print
+            window.onafterprint = function() {
+              setTimeout(function() {
+                window.close();
+              }, 1000);
+            };
+          <\/script>
+        </body>
+      </html>
+    `);
+    
+    printWindow.document.close();
+    
+    // Show success message
+    showNotification('PDF generated successfully! Opening print dialog...');
+  }
+
+  // Menu toggle function
+  function toggleMenu() {
+    const menuPanel = document.getElementById('menuPanel');
     menuPanel.classList.toggle('hidden');
+    
+    if (!menuPanel.classList.contains('hidden')) {
+      menuPanel.classList.add('fade-in');
+    }
   }
 
   // Close menu when clicking outside
-  document.addEventListener('click', (e) => {
-    if (
-      !menuPanel.contains(e.target) &&
-      !menuButton.contains(e.target)
-    ) {
+  document.addEventListener('click', function(event) {
+    const menuPanel = document.getElementById('menuPanel');
+    const menuButton = document.querySelector('button[onclick="toggleMenu()"]');
+    
+    if (!menuPanel.classList.contains('hidden') && 
+        !menuPanel.contains(event.target) && 
+        !menuButton.contains(event.target)) {
       menuPanel.classList.add('hidden');
+    }
+  });
+
+  // Optional: Enter key to add item
+  document.getElementById('itemName').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      addItem();
     }
   });
 </script>
 
-</script>
-  
-
 </body>
 </html>
-
