@@ -37,9 +37,56 @@
       50% { transform: scale(1.3); }
       100% { transform: scale(1); }
     }
+    /* Preloader Styles */
+    #preloader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease-out;
+    }
+    .preloader-content {
+      text-align: center;
+      animation: fadeIn 0.5s ease-out;
+    }
+    .app-name {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(45deg, #00ff88, #00ccff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 30px;
+      text-shadow: 0 2px 10px rgba(0, 255, 136, 0.3);
+      animation: fadeIn 0.9s ease-out 0.9s both;
+    }
+    .preloader-logo {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 30px;
+      animation: fadeIn 0.9s ease-out 0.9s both;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    }
+    
   </style>
 </head>
  <body class="bg-gradient-to-br from-gray-900 to-black min-h-screen text-white">
+  
+  <!-- Preloader with App Name and Logo -->
+  <div id="preloader">
+    <div class="preloader-content">
+      <div class="app-name">BigTree Shopping Cart</div>
+      <img src="BigTree_logo.png" class="preloader-logo" alt="BigTree Logo">
+      
+    </div>
+  </div>
 
   <!-- Fixed Header with Logo and Menu -->
   <header class="flex items-center justify-between px-6 py-4 sticky top-0 bg-gray-900/90 backdrop-blur-md z-50 border-b border-gray-800">
@@ -83,7 +130,7 @@
     </div>
   </div>
 
-  <div id="app" class="min-h-screen w-full overflow-auto" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);">
+  <div id="app" class="min-h-screen w-full overflow-auto hidden" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);">
     <!-- Main Shopping View -->
     <div id="main-view" class="min-h-screen p-4 md:p-6">
       <!-- Page Header (Moved under the fixed header) -->
@@ -337,6 +384,21 @@
   </div>
 
   <script>
+    // Preloader function
+    function hidePreloader() {
+      const preloader = document.getElementById('preloader');
+      const app = document.getElementById('app');
+      
+      // Hide preloader after 0.5 seconds
+      setTimeout(() => {
+        preloader.style.opacity = '0';
+        setTimeout(() => {
+          preloader.style.display = 'none';
+          app.classList.remove('hidden');
+        }, 300); // Match the CSS transition time
+      }, 500); // 0.5 seconds for the loader
+    }
+
     // Menu toggle function
     function toggleMenu() {
       const menuPanel = document.getElementById('menuPanel');
@@ -1119,6 +1181,10 @@
 
     // Initialize app on load
     document.addEventListener('DOMContentLoaded', function() {
+      // Start the preloader animation
+      hidePreloader();
+      
+      // Load the app data
       loadData();
     });
   </script>
