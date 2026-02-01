@@ -8,25 +8,14 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
-    .card-hover {
-      transition: all 0.3s ease;
-    }
+    .card-hover { transition: all 0.3s ease; }
     .card-hover:hover {
       transform: translateY(-5px);
       box-shadow: 0 10px 20px rgba(0,0,0,0.2);
     }
-    .module-expanded {
-      max-height: 2000px;
-      transition: max-height 0.5s ease-in-out;
-    }
-    .module-collapsed {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease-in-out;
-    }
-    .tutorial-step {
-      counter-increment: step;
-    }
+    .module-expanded { max-height: 2000px; transition: max-height 0.5s ease-in-out; }
+    .module-collapsed { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-in-out; }
+    .tutorial-step { counter-increment: step; }
     .tutorial-step:before {
       content: counter(step);
       display: inline-flex;
@@ -34,8 +23,8 @@
       justify-content: center;
       width: 28px;
       height: 28px;
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-      color: white;
+      background: linear-gradient(135deg,#22c55e,#16a34a);
+      color: #fff;
       border-radius: 50%;
       margin-right: 12px;
       font-size: 14px;
@@ -57,7 +46,7 @@
   <button onclick="toggleMenu()" class="text-2xl hover:text-green-400 p-2">☰</button>
 </header>
 
-<!-- Menu Panel -->
+<!-- Menu -->
 <div id="menuPanel" class="hidden fixed top-16 right-4 w-64 z-50">
   <div class="bg-gray-800/95 rounded-xl p-4 space-y-2 border border-gray-700 shadow-2xl">
     <a href="index.html" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50">
@@ -67,7 +56,7 @@
       <i class="fas fa-shopping-cart w-6 mr-3 text-gray-400"></i>Grocery List
     </a>
     <a href="about.html" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50">
-      <i class="fas fa-info-circle w-6 mr-3 text-gray-400"></i>About Us
+      <i class="fas fa-info-circle w-6 mr-3 text-gray-400"></i>About
     </a>
     <a href="terms.html" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50">
       <i class="fas fa-file-contract w-6 mr-3 text-gray-400"></i>Terms
@@ -80,78 +69,19 @@
 
 <main class="px-4 sm:px-6 pt-6 pb-20 max-w-6xl mx-auto">
 
-  <div class="text-center mb-10">
-    <h1 class="text-3xl font-bold mb-2 underline">BigTree Shopping Cart Tutorials</h1>
-    <p class="text-gray-400">Step-by-step guides and video tutorials</p>
-  </div>
+<!-- HEADER -->
+<div class="text-center mb-8">
+  <h1 class="text-3xl font-bold underline mb-2">BigTree Shopping Cart Tutorials</h1>
+  <p class="text-gray-400">Learn how to use all features step by step</p>
+</div>
 
-  <!-- VIDEO TUTORIALS -->
-  <div class="bg-gray-800/50 rounded-2xl p-6 border border-gray-700 mb-10">
-    <h2 class="text-xl font-bold mb-4 text-green-300">
-      <i class="fas fa-video mr-2"></i>Video Tutorials
-    </h2>
+<!-- WRITTEN TUTORIAL MODULES -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-      <!-- REAL VIDEO (FIRST ONE) -->
-      <div class="bg-gray-900/50 rounded-xl p-4">
-        <div class="aspect-video rounded-lg mb-4 overflow-hidden">
-          <iframe
-            class="w-full h-full"
-            src="https://www.youtube.com/embed/24ibTfT9o98"
-            title="BigTree Shopping Cart Walkthrough"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen>
-          </iframe>
-        </div>
-        <h3 class="font-bold text-white mb-2">Complete App Walkthrough</h3>
-        <p class="text-gray-400 text-sm">
-          Official introduction and overview of BigTree Shopping Cart
-        </p>
-      </div>
-
-      <!-- PLACEHOLDER FOR FUTURE VIDEOS -->
-      <div class="bg-gray-900/50 rounded-xl p-4">
-        <div class="aspect-video bg-black rounded-lg mb-4 flex items-center justify-center">
-          <i class="fas fa-play-circle text-4xl text-green-500"></i>
-        </div>
-        <h3 class="font-bold text-white mb-2">More Tutorials Coming Soon</h3>
-        <p class="text-gray-400 text-sm">
-          Additional videos will be added over time
-        </p>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- HELP -->
-  <div class="bg-green-900/20 rounded-2xl p-6 border border-green-800/30 text-center">
-    <i class="fas fa-question-circle text-4xl text-green-400 mb-4"></i>
-    <h2 class="text-xl font-bold mb-2">Need Help?</h2>
-    <p class="text-gray-400 mb-6">Contact us if you need assistance</p>
-
-    <a href="mailto:stcrijohstudio@gmail.com"
-       class="inline-flex items-center bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-3 rounded-lg font-medium">
-      <i class="fas fa-envelope mr-2"></i>Email Support
-    </a>
-  </div>
-
-</main>
-
-<script>
-function toggleMenu() {
-  document.getElementById('menuPanel').classList.toggle('hidden');
-}
-
-document.addEventListener('click', e => {
-  const panel = document.getElementById('menuPanel');
-  const btn = document.querySelector('button[onclick="toggleMenu()"]');
-  if (!panel.contains(e.target) && !btn.contains(e.target)) {
-    panel.classList.add('hidden');
-  }
-});
-</script>
-
-</body>
-</html>
+<!-- Getting Started -->
+<div class="bg-gray-800/50 rounded-2xl p-6 border border-green-800/30 card-hover">
+  <h2 class="text-xl font-bold mb-3">Getting Started</h2>
+  <div id="getting-started-content" class="module-collapsed">
+    <div class="space-y-4 pt-4 border-t border-gray-700">
+      <div class="tutorial-step">Open the BigTree Shopping Cart app</div>
+      <div class="tutorial-step
