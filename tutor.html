@@ -1,1243 +1,894 @@
-<!DOCTYPE html><html lang="en"><head>  <meta charset="UTF-8" />  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <title>Tutorials - BigTree Shopping Cart</title>  <script src="https://cdn.tailwindcss.com"></script>  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">  <style>
-  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tutorials - BigTree Shopping Cart</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
     .card-hover {
-  
       transition: all 0.3s ease;
-  
     }
-  
     
-  
     .card-hover:hover {
-  
       transform: translateY(-5px);
-  
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-  
     }
-  
     
-  
     .module-expanded {
-  
       max-height: 2000px;
-  
       transition: max-height 0.5s ease-in-out;
-  
     }
-  
     
-  
     .module-collapsed {
-  
       max-height: 0;
-  
       overflow: hidden;
-  
       transition: max-height 0.3s ease-in-out;
-  
     }
-  
     
-  
     .tutorial-step {
-  
       counter-increment: step;
-  
     }
-  
     
-  
     .tutorial-step:before {
-  
       content: counter(step);
-  
       display: inline-flex;
-  
       align-items: center;
-  
       justify-content: center;
-  
       width: 28px;
-  
       height: 28px;
-  
       background: linear-gradient(135deg, #22c55e, #16a34a);
-  
       color: white;
-  
       border-radius: 50%;
-  
       margin-right: 12px;
-  
       font-size: 14px;
-  
       font-weight: bold;
-  
     }
-  
-  </style></head><body class="bg-gradient-to-br from-gray-900 to-black min-h-screen text-white"><header class="flex items-center justify-between px-6 py-4 sticky top-0 bg-gray-900/90 backdrop-blur-md z-50 border-b border-gray-800">  <div class="flex items-center space-x-3"><div class="flex items-center space-x-2">
+  </style>
+</head>
+<body class="bg-gradient-to-br from-gray-900 to-black min-h-screen text-white">
 
-<img src="BigTree_logo.png" class="w-8 h-8" alt="App Logo">
+<header class="flex items-center justify-between px-6 py-4 sticky top-0 bg-gray-900/90 backdrop-blur-md z-50 border-b border-gray-800">
+  <div class="flex items-center space-x-3">
+    <div class="flex items-center space-x-2">
+    <img src="BigTree_logo.png" class="w-8 h-8" alt="App Logo">
+    
+  </div>
+    <div>
+      <span class="font-bold text-xl">BigTree Shopping Cart</span>
+      <div class="text-xs text-gray-400">Tutorials</div>
+    </div>
+  </div>
 
-  </div><div>
+  <button onclick="toggleMenu()" class="text-2xl hover:text-green-400 transition-colors p-2">☰</button>
+</header>
 
-  <span class="font-bold text-xl">BigTree Shopping Cart</span>
-
-  <div class="text-xs text-gray-400">Tutorials</div>
-
+<!-- Menu Panel -->
+<div id="menuPanel" class="hidden fixed top-16 right-4 w-64 z-50">
+  <div class="bg-gray-800/95 backdrop-blur-md rounded-xl p-4 space-y-2 border border-gray-700 shadow-2xl">
+    <a href="index.html" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50 transition">
+      <i class="fas fa-home w-6 mr-3 text-gray-400"></i>
+      <span>Home</span>
+    </a>
+    <a href="grocery.html" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50 transition">
+      <i class="fas fa-shopping-cart w-6 mr-3 text-gray-400"></i>
+      <span>Grocery List</span>
+    </a>
+    <a href="about.html" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50 transition">
+      <i class="fas fa-info-circle w-6 mr-3 text-gray-400"></i>
+      <span>About Us</span>
+    </a>
+    <a href="terms.html" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50 transition">
+      <i class="fas fa-file-contract w-6 mr-3 text-gray-400"></i>
+      <span>Terms & Conditions</span>
+    </a>
+    <a href="tutor.html" class="flex items-center p-3 rounded-lg bg-green-900/30 text-green-300 border border-green-800/30">
+      <i class="fas fa-graduation-cap w-6 mr-3"></i>
+      <span class="font-medium">Tutorials</span>
+    </a>
+  </div>
 </div>
 
-  </div><button onclick="toggleMenu()" class="text-2xl hover:text-green-400 transition-colors p-2">☰</button>
+<main class="px-4 sm:px-6 pt-6 pb-20 max-w-6xl mx-auto">
+  <!-- Header Section -->
+  <div class="mb-8 text-center">
+    <h1 class="text-3xl font-bold mb-2"><u>BigTree Shopping Cart Tutorials</u></h1>
+    <p class="text-gray-400">Learn how to use all features of the app with our step-by-step guides</p>
+    
+  </div>
 
-</header><!-- Menu Panel --><div id="menuPanel" class="hidden fixed top-16 right-4 w-64 z-50">  <div class="bg-gray-800/95 backdrop-blur-md rounded-xl p-4 space-y-2 border border-gray-700 shadow-2xl"><a href="index.html" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50 transition">
+  <!-- Tutorial Modules Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+    <!-- Getting Started Module -->
+    <div class="bg-gray-800/50 rounded-2xl p-6 border border-green-800/30 card-hover">
+      <div class="flex items-center mb-4">
+        <div class="w-12 h-12 rounded-lg bg-green-900/30 flex items-center justify-center mr-4">
+          <i class="fas fa-rocket text-green-400 text-xl"></i>
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-white">Getting Started</h2>
+          <p class="text-sm text-gray-400">Beginner's guide</p>
+        </div>
+      </div>
+      <p class="text-gray-300 mb-4">Learn the basics of BigTree Shopping Cart and how to navigate the interface.</p>
+      <div id="getting-started-content" class="module-collapsed">
+        <div class="space-y-4 pt-4 border-t border-gray-700">
+          <div class="tutorial-step text-gray-300">
+            Open the BigTree Shopping Cart app in your browser
+          </div>
+          <div class="tutorial-step text-gray-300">
+            Explore the main dashboard and familiar items
+          </div>
+          <div class="tutorial-step text-gray-300">
+            Learn basic navigation using the menu button
+          </div>
+          <div class="tutorial-step text-gray-300">
+            Set up your first shopping list
+          </div>
+        </div>
+      </div>
+      <button onclick="toggleModule('getting-started')" 
+              class="w-full mt-4 bg-green-900/30 hover:bg-green-900/40 text-green-300 font-medium py-2 px-4 rounded-lg transition flex items-center justify-center">
+        <i class="fas fa-book-open mr-2"></i>
+        <span>View Tutorial</span>
+      </button>
+    </div>
+    
+    <!-- Grocery List Module -->
+    <div class="bg-gray-800/50 rounded-2xl p-6 border border-blue-800/30 card-hover">
+      <div class="flex items-center mb-4">
+        <div class="w-12 h-12 rounded-lg bg-blue-900/30 flex items-center justify-center mr-4">
+          <i class="fas fa-shopping-cart text-blue-400 text-xl"></i>
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-white">Grocery List</h2>
+          <p class="text-sm text-gray-400">Shopping list management</p>
+        </div>
+      </div>
+      <p class="text-gray-300 mb-4">Master the art of creating and managing perfect grocery lists.</p>
+      <div id="grocery-list-content" class="module-collapsed">
+        <div class="space-y-4 pt-4 border-t border-gray-700">
+          <div class="tutorial-step text-gray-300">
+            Click "Grocery List" in the menu
+          </div>
+          <div class="tutorial-step text-gray-300">
+            Add items by typing name and selecting category
+          </div>
+          <div class="tutorial-step text-gray-300">
+            Use quick-add buttons for common items
+          </div>
+          <div class="tutorial-step text-gray-300">
+            Organize items by food, clothes, or other categories
+          </div>
+        </div>
+      </div>
+      <button onclick="toggleModule('grocery-list')" 
+              class="w-full mt-4 bg-blue-900/30 hover:bg-blue-900/40 text-blue-300 font-medium py-2 px-4 rounded-lg transition flex items-center justify-center">
+        <i class="fas fa-book-open mr-2"></i>
+        <span>View Tutorial</span>
+      </button>
+    </div>
+    
+    <!-- Voice Input Module -->
+    <div class="bg-gray-800/50 rounded-2xl p-6 border border-purple-800/30 card-hover">
+      <div class="flex items-center mb-4">
+        <div class="w-12 h-12 rounded-lg bg-purple-900/30 flex items-center justify-center mr-4">
+          <i class="fas fa-microphone text-purple-400 text-xl"></i>
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-white">Voice Input</h2>
+          <p class="text-sm text-gray-400">Hands-free adding</p>
+        </div>
+      </div>
+      <p class="text-gray-300 mb-4">Learn how to use voice commands to add items quickly and efficiently.</p>
+      <div id="voice-input-content" class="module-collapsed">
+        <div class="space-y-4 pt-4 border-t border-gray-700">
+          <div class="tutorial-step text-gray-300">
+            Look for the microphone icon
+          </div>
+          <div class="tutorial-step text-gray-300">
+            Click and hold to start recording
+          </div>
+          <div class="tutorial-step text-gray-300">
+            Speak clearly: "Add milk to food category"
+          </div>
+          <div class="tutorial-step text-gray-300">
+            Review and confirm the transcribed item
+          </div>
+        </div>
+      </div>
+      <button onclick="toggleModule('voice-input')" 
+              class="w-full mt-4 bg-purple-900/30 hover:bg-purple-900/40 text-purple-300 font-medium py-2 px-4 rounded-lg transition flex items-center justify-center">
+        <i class="fas fa-book-open mr-2"></i>
+        <span>View Tutorial</span>
+      </button>
+    </div>
+    
+    <!-- Shopping Cart Module -->
+    <div class="bg-gray-800/50 rounded-2xl p-6 border border-yellow-800/30 card-hover">
+      <div class="flex items-center mb-4">
+        <div class="w-12 h-12 rounded-lg bg-yellow-900/30 flex items-center justify-center mr-4">
+          <i class="fas fa-cart-plus text-yellow-400 text-xl"></i>
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-white">Shopping Cart</h2>
+          <p class="text-sm text-gray-400">Checkout & calculations</p>
+        </div>
+      </div>
+      <p class="text-gray-300 mb-4">Understand how to use the shopping cart features for actual purchases.</p>
+      <div id="shopping-cart-content" class="module-collapsed">
+        <div class="space-y-4 pt-4 border-t border-gray-700">
+          <div class="tutorial-step text-gray-300">
+            Add items with prices to your cart
+          </div>
+          <div class="tutorial-step text-gray-300">
+            View running total as you add items
+          </div>
+          <div class="tutorial-step text-gray-300">
+            Apply discounts or promotions
+          </div>
+          <div class="tutorial-step text-gray-300">
+            Calculate tax and final total
+          </div>
+        </div>
+      </div>
+      <button onclick="toggleModule('shopping-cart')" 
+              class="w-full mt-4 bg-yellow-900/30 hover:bg-yellow-900/40 text-yellow-300 font-medium py-2 px-4 rounded-lg transition flex items-center justify-center">
+        <i class="fas fa-book-open mr-2"></i>
+        <span>View Tutorial</span>
+      </button>
+    </div>
+    
+    <!-- Printing & Export Module -->
+    <div class="bg-gray-800/50 rounded-2xl p-6 border border-red-800/30 card-hover">
+      <div class="flex items-center mb-4">
+        <div class="w-12 h-12 rounded-lg bg-red-900/30 flex items-center justify-center mr-4">
+          <i class="fas fa-print text-red-400 text-xl"></i>
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-white">Printing & Export</h2>
+          <p class="text-sm text-gray-400">Save and share lists</p>
+        </div>
+      </div>
+      <p class="text-gray-300 mb-4">Learn how to print, export, and save your shopping lists for later use.</p>
+      <div id="printing-content" class="module-collapsed">
+        <div class="space-y-4 pt-4 border-t border-gray-700">
+          <div class="tutorial-step text-gray-300">
+            Complete your grocery list
+          </div>
+          <div class="tutorial-step text-gray-300">
+            Click "Print PDF" button
+          </div>
+          <div class="tutorial-step text-gray-300">
+            Preview and adjust print settings
+          </div>
+          <div class="tutorial-step text-gray-300">
+            Save as PDF or print directly
+          </div>
+        </div>
+      </div>
+      <button onclick="toggleModule('printing')" 
+              class="w-full mt-4 bg-red-900/30 hover:bg-red-900/40 text-red-300 font-medium py-2 px-4 rounded-lg transition flex items-center justify-center">
+        <i class="fas fa-book-open mr-2"></i>
+        <span>View Tutorial</span>
+      </button>
+    </div>
+    
+    <!-- Advanced Features Module -->
+    <div class="bg-gray-800/50 rounded-2xl p-6 border border-cyan-800/30 card-hover">
+      <div class="flex items-center mb-4">
+        <div class="w-12 h-12 rounded-lg bg-cyan-900/30 flex items-center justify-center mr-4">
+          <i class="fas fa-cogs text-cyan-400 text-xl"></i>
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-white">Advanced Features</h2>
+          <p class="text-sm text-gray-400">Pro tips & tricks</p>
+        </div>
+      </div>
+      <p class="text-gray-300 mb-4">Discover advanced features to enhance your shopping experience.</p>
+      <div id="advanced-content" class="module-collapsed">
+        <div class="space-y-4 pt-4 border-t border-gray-700">
+          <div class="tutorial-step text-gray-300">
+            Create custom item presets
+          </div>
+          <div class="tutorial-step text-gray-300">
+            Import/export lists from other apps
+          </div>
+          <div class="tutorial-step text-gray-300">
+            Use keyboard shortcuts
+          </div>
+          <div class="tutorial-step text-gray-300">
+            Set up recurring shopping lists
+          </div>
+        </div>
+      </div>
+      <button onclick="toggleModule('advanced')" 
+              class="w-full mt-4 bg-cyan-900/30 hover:bg-cyan-900/40 text-cyan-300 font-medium py-2 px-4 rounded-lg transition flex items-center justify-center">
+        <i class="fas fa-book-open mr-2"></i>
+        <span>View Tutorial</span>
+      </button>
+    </div>
+  </div>
 
-  <i class="fas fa-home w-6 mr-3 text-gray-400"></i>
-
-  <span>Home</span>
-
-</a>
-
-<a href="grocery.html" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50 transition">
-
-  <i class="fas fa-shopping-cart w-6 mr-3 text-gray-400"></i>
-
-  <span>Grocery List</span>
-
-</a>
-
-<a href="about.html" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50 transition">
-
-  <i class="fas fa-info-circle w-6 mr-3 text-gray-400"></i>
-
-  <span>About Us</span>
-
-</a>
-
-<a href="terms.html" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50 transition">
-
-  <i class="fas fa-file-contract w-6 mr-3 text-gray-400"></i>
-
-  <span>Terms & Conditions</span>
-
-</a>
-
-<a href="tutor.html" class="flex items-center p-3 rounded-lg bg-green-900/30 text-green-300 border border-green-800/30">
-
-  <i class="fas fa-graduation-cap w-6 mr-3"></i>
-
-  <span class="font-medium">Tutorials</span>
-
-</a>
-
-  </div></div><main class="px-4 sm:px-6 pt-6 pb-20 max-w-6xl mx-auto">  <!-- Header Section -->  <div class="mb-8 text-center"><h1 class="text-3xl font-bold mb-2"><u>BigTree Shopping Cart Tutorials</u></h1>
-
-<p class="text-gray-400">Learn how to use all features of the app with our step-by-step guides</p>
-
-  </div>  <!-- Tutorial Management Section (Admin) -->  <div id="adminSection" class="bg-gray-800/50 rounded-2xl p-6 border border-gray-700 mb-8"><div class="flex items-center justify-between mb-4">
-
-  <h2 class="text-xl font-bold text-green-300">
-
-    <i class="fas fa-upload mr-2"></i>Upload New Tutorial
-
+<!-- Video Tutorials Section -->
+<div class="bg-gray-800/50 rounded-2xl p-6 border border-gray-700 mb-8">
+  <h2 class="text-xl font-bold mb-4 text-green-300">
+    <i class="fas fa-video mr-2"></i>Video Tutorials
   </h2>
-
-  <button onclick="toggleAdminSection()" class="text-sm bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded-lg transition">
-
-    <i class="fas fa-cog mr-1"></i> Admin Panel
-
-  </button>
-
+  <p class="text-gray-400 mb-6">Watch our video guides for visual learning</p>
+  
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Video 1 -->
+    <div class="bg-gray-900/50 rounded-xl p-4 hover:bg-gray-900/70 transition-colors">
+      <div class="aspect-video rounded-lg mb-4 overflow-hidden">
+        <iframe
+          class="w-full h-full rounded-lg"
+          src="https://www.youtube.com/embed/24ibTfT9o98"
+          title="BigTree Shopping Cart Walkthrough"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+          loading="lazy">
+        </iframe>
+      </div>
+      <div class="inline-block bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded mb-2">
+        Beginner
+      </div>
+      <h3 class="font-bold text-white mb-2">Complete App Walkthrough</h3>
+      <p class="text-gray-400 text-sm mb-4">Official introduction and overview of BigTree Shopping Cart</p>
+      <a href="https://www.youtube.com/watch?v=24ibTfT9o98" 
+         target="_blank" 
+         rel="noopener noreferrer"
+         class="text-green-400 hover:text-green-300 text-sm flex items-center">
+        <i class="fab fa-youtube mr-2"></i> Watch on YouTube
+      </a>
+    </div>
+    
+    <!-- Video 2 (Coming Soon) -->
+    <div class="bg-gray-900/50 rounded-xl p-4 hover:bg-gray-900/70 transition-colors">
+      <div class="aspect-video bg-black/50 rounded-lg mb-4 flex flex-col items-center justify-center">
+        <i class="fas fa-video-slash text-4xl text-gray-600 mb-2"></i>
+        <p class="text-gray-500 text-sm">Video coming soon</p>
+      </div>
+      <div class="inline-block bg-blue-500/20 text-blue-400 text-xs px-2 py-1 rounded mb-2">
+        Advanced
+      </div>
+      <h3 class="font-bold text-white mb-2">Grocery List Masterclass</h3>
+      <p class="text-gray-400 text-sm mb-4">Advanced tips for power users</p>
+      <p class="text-gray-500 text-sm italic">Check back soon for this tutorial!</p>
+    </div>
+    
+    <!-- Video 3 (Coming Soon) -->
+    <div class="bg-gray-900/50 rounded-xl p-4 hover:bg-gray-900/70 transition-colors">
+      <div class="aspect-video bg-black/50 rounded-lg mb-4 flex flex-col items-center justify-center">
+        <i class="fas fa-video-slash text-4xl text-gray-600 mb-2"></i>
+        <p class="text-gray-500 text-sm">Video coming soon</p>
+      </div>
+      <div class="inline-block bg-purple-500/20 text-purple-400 text-xs px-2 py-1 rounded mb-2">
+        Tutorial
+      </div>
+      <h3 class="font-bold text-white mb-2">Voice Input Guide</h3>
+      <p class="text-gray-400 text-sm mb-4">Learn to use voice commands effectively</p>
+      <p class="text-gray-500 text-sm italic">Check back soon for this tutorial!</p>
+    </div>
+  </div>
 </div>
 
-
-
-<div id="uploadForm" class="space-y-4">
-
-  <div>
-
-    <label class="block text-sm font-medium text-gray-300 mb-2">
-
-      <i class="fas fa-heading mr-2"></i>Tutorial Title
-
-    </label>
-
-    <input type="text" id="tutorialTitle" 
-
-           class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-
-           placeholder="e.g., How to Create Your First Grocery List">
-
-  </div>
-
-  
-
-  <div>
-
-    <label class="block text-sm font-medium text-gray-300 mb-2">
-
-      <i class="fas fa-layer-group mr-2"></i>Module/Category
-
-    </label>
-
-    <select id="tutorialModule" 
-
-            class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
-
-      <option value="getting-started">Getting Started</option>
-
-      <option value="grocery-list">Grocery List</option>
-
-      <option value="voice-input">Voice Input</option>
-
-      <option value="shopping-cart">Shopping Cart</option>
-
-      <option value="printing">Printing & Export</option>
-
-      <option value="advanced">Advanced Features</option>
-
-    </select>
-
-  </div>
-
-  
-
-  <div>
-
-    <label class="block text-sm font-medium text-gray-300 mb-2">
-
-      <i class="fas fa-align-left mr-2"></i>Content (Step-by-Step Instructions)
-
-    </label>
-
-    <textarea id="tutorialContent" rows="4"
-
-              class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-
-              placeholder="Enter step-by-step instructions. Separate each step with a new line."></textarea>
-
-    <p class="text-xs text-gray-500 mt-1">Tip: Start each step with a number or bullet point</p>
-
-  </div>
-
-  
-
-  <div>
-
-    <label class="block text-sm font-medium text-gray-300 mb-2">
-
-      <i class="fas fa-link mr-2"></i>Video URL (Optional)
-
-    </label>
-
-    <input type="url" id="tutorialVideoUrl" 
-
-           class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-
-           placeholder="https://youtube.com/watch?v=...">
-
-  </div>
-
-  
-
-  <div class="flex gap-3">
-
-    <button onclick="uploadTutorial()" 
-
-            class="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-3 px-4 rounded-lg transition">
-
-      <i class="fas fa-upload mr-2"></i>Upload Tutorial
-
+<!-- Video Modal -->
+<div id="video-modal" class="hidden fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
+  <div class="relative w-full max-w-4xl">
+    <button 
+      id="close-modal"
+      class="absolute -top-10 right-0 text-white hover:text-gray-300 text-2xl z-10"
+    >
+      <i class="fas fa-times"></i>
     </button>
-
-    <button onclick="clearForm()" 
-
-            class="flex-1 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-4 rounded-lg transition">
-
-      <i class="fas fa-times mr-2"></i>Clear Form
-
-    </button>
-
+    
+    <!-- Video Player Container -->
+    <div class="aspect-video w-full bg-black rounded-lg overflow-hidden">
+      <div id="youtube-player-container" class="w-full h-full">
+        <!-- Player will be inserted here -->
+      </div>
+    </div>
   </div>
-
 </div>
 
-  </div>  <!-- Tutorial Modules Grid -->  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12"><!-- Getting Started Module -->
-
-<div class="bg-gray-800/50 rounded-2xl p-6 border border-green-800/30 card-hover">
-
-  <div class="flex items-center mb-4">
-
-    <div class="w-12 h-12 rounded-lg bg-green-900/30 flex items-center justify-center mr-4">
-
-      <i class="fas fa-rocket text-green-400 text-xl"></i>
-
-    </div>
-
-    <div>
-
-      <h2 class="text-xl font-bold text-white">Getting Started</h2>
-
-      <p class="text-sm text-gray-400">Beginner's guide</p>
-
-    </div>
-
-  </div>
-
-  <p class="text-gray-300 mb-4">Learn the basics of BigTree Shopping Cart and how to navigate the interface.</p>
-
-  <div id="getting-started-content" class="module-collapsed">
-
-    <div class="space-y-4 pt-4 border-t border-gray-700">
-
-      <div class="tutorial-step text-gray-300">
-
-        Open the BigTree Shopping Cart app in your browser
-
-      </div>
-
-      <div class="tutorial-step text-gray-300">
-
-        Explore the main dashboard and familiar items
-
-      </div>
-
-      <div class="tutorial-step text-gray-300">
-
-        Learn basic navigation using the menu button
-
-      </div>
-
-      <div class="tutorial-step text-gray-300">
-
-        Set up your first shopping list
-
-      </div>
-
-    </div>
-
-  </div>
-
-  <button onclick="toggleModule('getting-started')" 
-
-          class="w-full mt-4 bg-green-900/30 hover:bg-green-900/40 text-green-300 font-medium py-2 px-4 rounded-lg transition flex items-center justify-center">
-
-    <i class="fas fa-book-open mr-2"></i>
-
-    <span>View Tutorial</span>
-
-  </button>
-
-</div>
-
-
-
-<!-- Grocery List Module -->
-
-<div class="bg-gray-800/50 rounded-2xl p-6 border border-blue-800/30 card-hover">
-
-  <div class="flex items-center mb-4">
-
-    <div class="w-12 h-12 rounded-lg bg-blue-900/30 flex items-center justify-center mr-4">
-
-      <i class="fas fa-shopping-cart text-blue-400 text-xl"></i>
-
-    </div>
-
-    <div>
-
-      <h2 class="text-xl font-bold text-white">Grocery List</h2>
-
-      <p class="text-sm text-gray-400">Shopping list management</p>
-
-    </div>
-
-  </div>
-
-  <p class="text-gray-300 mb-4">Master the art of creating and managing perfect grocery lists.</p>
-
-  <div id="grocery-list-content" class="module-collapsed">
-
-    <div class="space-y-4 pt-4 border-t border-gray-700">
-
-      <div class="tutorial-step text-gray-300">
-
-        Click "Grocery List" in the menu
-
-      </div>
-
-      <div class="tutorial-step text-gray-300">
-
-        Add items by typing name and selecting category
-
-      </div>
-
-      <div class="tutorial-step text-gray-300">
-
-        Use quick-add buttons for common items
-
-      </div>
-
-      <div class="tutorial-step text-gray-300">
-
-        Organize items by food, clothes, or other categories
-
-      </div>
-
-    </div>
-
-  </div>
-
-  <button onclick="toggleModule('grocery-list')" 
-
-          class="w-full mt-4 bg-blue-900/30 hover:bg-blue-900/40 text-blue-300 font-medium py-2 px-4 rounded-lg transition flex items-center justify-center">
-
-    <i class="fas fa-book-open mr-2"></i>
-
-    <span>View Tutorial</span>
-
-  </button>
-
-</div>
-
-
-
-<!-- Voice Input Module -->
-
-<div class="bg-gray-800/50 rounded-2xl p-6 border border-purple-800/30 card-hover">
-
-  <div class="flex items-center mb-4">
-
-    <div class="w-12 h-12 rounded-lg bg-purple-900/30 flex items-center justify-center mr-4">
-
-      <i class="fas fa-microphone text-purple-400 text-xl"></i>
-
-    </div>
-
-    <div>
-
-      <h2 class="text-xl font-bold text-white">Voice Input</h2>
-
-      <p class="text-sm text-gray-400">Hands-free adding</p>
-
-    </div>
-
-  </div>
-
-  <p class="text-gray-300 mb-4">Learn how to use voice commands to add items quickly and efficiently.</p>
-
-  <div id="voice-input-content" class="module-collapsed">
-
-    <div class="space-y-4 pt-4 border-t border-gray-700">
-
-      <div class="tutorial-step text-gray-300">
-
-        Look for the microphone icon
-
-      </div>
-
-      <div class="tutorial-step text-gray-300">
-
-        Click and hold to start recording
-
-      </div>
-
-      <div class="tutorial-step text-gray-300">
-
-        Speak clearly: "Add milk to food category"
-
-      </div>
-
-      <div class="tutorial-step text-gray-300">
-
-        Review and confirm the transcribed item
-
-      </div>
-
-    </div>
-
-  </div>
-
-  <button onclick="toggleModule('voice-input')" 
-
-          class="w-full mt-4 bg-purple-900/30 hover:bg-purple-900/40 text-purple-300 font-medium py-2 px-4 rounded-lg transition flex items-center justify-center">
-
-    <i class="fas fa-book-open mr-2"></i>
-
-    <span>View Tutorial</span>
-
-  </button>
-
-</div>
-
-
-
-<!-- Shopping Cart Module -->
-
-<div class="bg-gray-800/50 rounded-2xl p-6 border border-yellow-800/30 card-hover">
-
-  <div class="flex items-center mb-4">
-
-    <div class="w-12 h-12 rounded-lg bg-yellow-900/30 flex items-center justify-center mr-4">
-
-      <i class="fas fa-cart-plus text-yellow-400 text-xl"></i>
-
-    </div>
-
-    <div>
-
-      <h2 class="text-xl font-bold text-white">Shopping Cart</h2>
-
-      <p class="text-sm text-gray-400">Checkout & calculations</p>
-
-    </div>
-
-  </div>
-
-  <p class="text-gray-300 mb-4">Understand how to use the shopping cart features for actual purchases.</p>
-
-  <div id="shopping-cart-content" class="module-collapsed">
-
-    <div class="space-y-4 pt-4 border-t border-gray-700">
-
-      <div class="tutorial-step text-gray-300">
-
-        Add items with prices to your cart
-
-      </div>
-
-      <div class="tutorial-step text-gray-300">
-
-        View running total as you add items
-
-      </div>
-
-      <div class="tutorial-step text-gray-300">
-
-        Apply discounts or promotions
-
-      </div>
-
-      <div class="tutorial-step text-gray-300">
-
-        Calculate tax and final total
-
-      </div>
-
-    </div>
-
-  </div>
-
-  <button onclick="toggleModule('shopping-cart')" 
-
-          class="w-full mt-4 bg-yellow-900/30 hover:bg-yellow-900/40 text-yellow-300 font-medium py-2 px-4 rounded-lg transition flex items-center justify-center">
-
-    <i class="fas fa-book-open mr-2"></i>
-
-    <span>View Tutorial</span>
-
-  </button>
-
-</div>
-
-
-
-<!-- Printing & Export Module -->
-
-<div class="bg-gray-800/50 rounded-2xl p-6 border border-red-800/30 card-hover">
-
-  <div class="flex items-center mb-4">
-
-    <div class="w-12 h-12 rounded-lg bg-red-900/30 flex items-center justify-center mr-4">
-
-      <i class="fas fa-print text-red-400 text-xl"></i>
-
-    </div>
-
-    <div>
-
-      <h2 class="text-xl font-bold text-white">Printing & Export</h2>
-
-      <p class="text-sm text-gray-400">Save and share lists</p>
-
-    </div>
-
-  </div>
-
-  <p class="text-gray-300 mb-4">Learn how to print, export, and save your shopping lists for later use.</p>
-
-  <div id="printing-content" class="module-collapsed">
-
-    <div class="space-y-4 pt-4 border-t border-gray-700">
-
-      <div class="tutorial-step text-gray-300">
-
-        Complete your grocery list
-
-      </div>
-
-      <div class="tutorial-step text-gray-300">
-
-        Click "Print PDF" button
-
-      </div>
-
-      <div class="tutorial-step text-gray-300">
-
-        Preview and adjust print settings
-
-      </div>
-
-      <div class="tutorial-step text-gray-300">
-
-        Save as PDF or print directly
-
-      </div>
-
-    </div>
-
-  </div>
-
-  <button onclick="toggleModule('printing')" 
-
-          class="w-full mt-4 bg-red-900/30 hover:bg-red-900/40 text-red-300 font-medium py-2 px-4 rounded-lg transition flex items-center justify-center">
-
-    <i class="fas fa-book-open mr-2"></i>
-
-    <span>View Tutorial</span>
-
-  </button>
-
-</div>
-
-
-
-<!-- Advanced Features Module -->
-
-<div class="bg-gray-800/50 rounded-2xl p-6 border border-cyan-800/30 card-hover">
-
-  <div class="flex items-center mb-4">
-
-    <div class="w-12 h-12 rounded-lg bg-cyan-900/30 flex items-center justify-center mr-4">
-
-      <i class="fas fa-cogs text-cyan-400 text-xl"></i>
-
-    </div>
-
-    <div>
-
-      <h2 class="text-xl font-bold text-white">Advanced Features</h2>
-
-      <p class="text-sm text-gray-400">Pro tips & tricks</p>
-
-    </div>
-
-  </div>
-
-  <p class="text-gray-300 mb-4">Discover advanced features to enhance your shopping experience.</p>
-
-  <div id="advanced-content" class="module-collapsed">
-
-    <div class="space-y-4 pt-4 border-t border-gray-700">
-
-      <div class="tutorial-step text-gray-300">
-
-        Create custom item presets
-
-      </div>
-
-      <div class="tutorial-step text-gray-300">
-
-        Import/export lists from other apps
-
-      </div>
-
-      <div class="tutorial-step text-gray-300">
-
-        Use keyboard shortcuts
-
-      </div>
-
-      <div class="tutorial-step text-gray-300">
-
-        Set up recurring shopping lists
-
-      </div>
-
-    </div>
-
-  </div>
-
-  <button onclick="toggleModule('advanced')" 
-
-          class="w-full mt-4 bg-cyan-900/30 hover:bg-cyan-900/40 text-cyan-300 font-medium py-2 px-4 rounded-lg transition flex items-center justify-center">
-
-    <i class="fas fa-book-open mr-2"></i>
-
-    <span>View Tutorial</span>
-
-  </button>
-
-</div>
-
-  </div>  <!-- Video Tutorials Section -->  <div class="bg-gray-800/50 rounded-2xl p-6 border border-gray-700 mb-8"><h2 class="text-xl font-bold mb-4 text-green-300">
-
-  <i class="fas fa-video mr-2"></i>Video Tutorials
-
-</h2>
-
-<p class="text-gray-400 mb-6">Watch our video guides for visual learning</p>
-
-
-
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-  <div class="bg-gray-900/50 rounded-xl p-4">
-
-    <div class="aspect-video bg-black rounded-lg mb-4 flex items-center justify-center">
-
-      <i class="fas fa-play-circle text-4xl text-green-500"></i>
-
-    </div>
-
-    <h3 class="font-bold text-white mb-2">Complete App Walkthrough</h3>
-
-    <p class="text-gray-400 text-sm mb-3">A 10-minute guide covering all features</p>
-
-    <button class="text-green-400 hover:text-green-300 text-sm flex items-center">
-
-      <i class="fas fa-play mr-2"></i> Watch Now
-
-    </button>
-
-  </div>
-
+<script>
+// ========================
+// CONFIGURATION
+// ========================
+
+
+// ========================
+// VIDEO RENDERER
+// ========================
+function renderVideos() {
+  const container = document.getElementById('video-container');
   
-
-  <div class="bg-gray-900/50 rounded-xl p-4">
-
-    <div class="aspect-video bg-black rounded-lg mb-4 flex items-center justify-center">
-
-      <i class="fas fa-play-circle text-4xl text-green-500"></i>
-
+  if (!container) return;
+  
+  if (videos.length === 0) {
+    container.innerHTML = `
+      <div class="col-span-full text-center py-12">
+        <i class="fas fa-video-slash text-4xl text-gray-600 mb-4"></i>
+        <p class="text-gray-400">Video tutorials coming soon!</p>
+      </div>
+    `;
+    return;
+  }
+  
+  container.innerHTML = videos.map(video => `
+    <div class="bg-gray-900/50 rounded-xl p-4 hover:bg-gray-900/70 transition-colors">
+      <div 
+        class="video-thumbnail relative aspect-video bg-black rounded-lg mb-4 overflow-hidden cursor-pointer group"
+        data-video-id="${video.youtubeId}"
+      >
+        <!-- YouTube Thumbnail with fallback -->
+        <img 
+          src="https://img.youtube.com/vi/${video.youtubeId}/maxresdefault.jpg"
+          onerror="this.src='https://img.youtube.com/vi/${video.youtubeId}/hqdefault.jpg'"
+          alt="${video.title}"
+          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          loading="lazy"
+        >
+        
+        <!-- Play Button Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-center justify-center">
+          <div class="bg-green-500 hover:bg-green-600 rounded-full w-16 h-16 flex items-center justify-center transform transition-transform group-hover:scale-110">
+            <i class="fas fa-play text-2xl text-white ml-1"></i>
+          </div>
+        </div>
+        
+        <!-- Duration Badge -->
+        <div class="absolute bottom-3 right-3 bg-black/90 text-white text-xs px-2 py-1 rounded">
+          ${video.duration}
+        </div>
+      </div>
+      
+      <!-- Category Badge -->
+      <div class="inline-block bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded mb-2">
+        ${video.category}
+      </div>
+      
+      <!-- Title & Description -->
+      <h3 class="font-bold text-white mb-2">${video.title}</h3>
+      <p class="text-gray-400 text-sm mb-4">${video.description}</p>
+      
+      <!-- Watch Button -->
+      <button 
+        class="play-btn w-full bg-green-500/20 hover:bg-green-500/30 text-green-400 hover:text-green-300 py-2 rounded-lg text-sm flex items-center justify-center transition-colors"
+        data-video-id="${video.youtubeId}"
+      >
+        <i class="fas fa-play mr-2"></i> Watch Tutorial
+      </button>
     </div>
+  `).join('');
+}
 
-    <h3 class="font-bold text-white mb-2">Grocery List Masterclass</h3>
+// ========================
+// YOUTUBE PLAYER FUNCTIONS
+// ========================
+let youtubePlayer = null;
 
-    <p class="text-gray-400 text-sm mb-3">Advanced tips for power users</p>
+function openVideoModal(youtubeId) {
+  const modal = document.getElementById('video-modal');
+  const playerContainer = document.getElementById('youtube-player-container');
+  
+  if (!modal || !playerContainer) return;
+  
+  // Clear previous player
+  playerContainer.innerHTML = '';
+  
+  // Create new iframe
+  const iframe = document.createElement('iframe');
+  iframe.id = 'youtube-player';
+  iframe.className = 'w-full h-full';
+  iframe.frameBorder = '0';
+  iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+  iframe.allowFullscreen = true;
+  
+  // Use embed URL with proper parameters
+  iframe.src = `https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0&modestbranding=1&showinfo=0`;
+  
+  playerContainer.appendChild(iframe);
+  
+  // Show modal
+  modal.classList.remove('hidden');
+  document.body.classList.add('overflow-hidden');
+  
+  // Store reference to player
+  youtubePlayer = iframe;
+}
 
-    <button class="text-green-400 hover:text-green-300 text-sm flex items-center">
+function closeVideoModal() {
+  const modal = document.getElementById('video-modal');
+  const playerContainer = document.getElementById('youtube-player-container');
+  
+  if (!modal || !playerContainer) return;
+  
+  // Stop the video
+  if (youtubePlayer) {
+    // Remove the iframe to stop the video
+    youtubePlayer.src = '';
+    youtubePlayer = null;
+  }
+  
+  // Clear container
+  playerContainer.innerHTML = '';
+  
+  // Hide modal
+  modal.classList.add('hidden');
+  document.body.classList.remove('overflow-hidden');
+}
 
-      <i class="fas fa-play mr-2"></i> Watch Now
+// ========================
+// EVENT LISTENERS
+// ========================
+document.addEventListener('DOMContentLoaded', function() {
+  // Render videos
+  renderVideos();
+  
+  // Click handler for play buttons
+  document.addEventListener('click', function(e) {
+    const playBtn = e.target.closest('.play-btn');
+    const thumbnail = e.target.closest('.video-thumbnail');
+    
+    if (playBtn || thumbnail) {
+      const element = playBtn || thumbnail;
+      const videoId = element.getAttribute('data-video-id');
+      if (videoId) {
+        e.preventDefault();
+        openVideoModal(videoId);
+      }
+    }
+    
+    // Close modal
+    if (e.target.id === 'close-modal' || 
+        e.target.closest('#close-modal') ||
+        e.target.id === 'video-modal') {
+      e.preventDefault();
+      closeVideoModal();
+    }
+  });
+  
+  // Escape key to close modal
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeVideoModal();
+    }
+  });
+});
 
-    </button>
+// ========================
+// DEBUG HELPER
+// ========================
+// Test if the video can be embedded
+function testVideoEmbedding(youtubeId) {
+  console.log('Testing video:', youtubeId);
+  console.log('Thumbnail URLs:');
+  console.log(`- Max quality: https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`);
+  console.log(`- High quality: https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`);
+  console.log(`- Standard: https://img.youtube.com/vi/${youtubeId}/sddefault.jpg`);
+  console.log('\nEmbed URLs:');
+  console.log(`- Standard: https://www.youtube.com/embed/${youtubeId}`);
+  console.log(`- With autoplay: https://www.youtube.com/embed/${youtubeId}?autoplay=1`);
+  console.log(`- No cookie: https://www.youtube-nocookie.com/embed/${youtubeId}`);
+  
+  // Open a test window
+  const testUrl = `https://www.youtube.com/embed/${youtubeId}`;
+  console.log('\nTest URL:', testUrl);
+  
+  // You can uncomment this to open in a new tab for testing:
+  // window.open(testUrl, '_blank');
+}
 
+// Test your video
+if (videos.length > 0) {
+  console.log('Video debugging info:');
+  testVideoEmbedding(videos[0].youtubeId);
+}
+</script>
+
+<style>
+/* Custom scrollbar for modal */
+#video-modal {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Prevent background scrolling when modal is open */
+.overflow-hidden {
+  overflow: hidden;
+}
+
+/* Smooth hover effects */
+.video-thumbnail {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.video-thumbnail:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Play button animation */
+.video-thumbnail .bg-green-500 {
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+}
+
+.video-thumbnail:hover .bg-green-500 {
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
+}
+</style>
+  <!-- Help & Support Section -->
+  <div class="bg-green-900/20 rounded-2xl p-6 border border-green-800/30">
+    <div class="text-center">
+      <i class="fas fa-question-circle text-4xl text-green-400 mb-4"></i>
+      <h2 class="text-xl font-bold text-white mb-2">Need More Help?</h2>
+      <p class="text-gray-400 mb-6">Can't find what you're looking for? We're here to help!</p>
+      
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="mailto:stcrijohstudio@gmail.com" 
+           class="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-medium py-3 px-6 rounded-lg transition flex items-center">
+          <i class="fas fa-envelope mr-2"></i> Email Support
+        </a>
+        <a href="about.html" 
+           class="bg-gray-800 hover:bg-gray-700 text-white font-medium py-3 px-6 rounded-lg transition flex items-center">
+          <i class="fas fa-info-circle mr-2"></i> Visit About Page
+        </a>
+      </div>
+    </div>
   </div>
+</main>
 
-</div>
+<script>
 
-  </div>  <!-- Help & Support Section -->  <div class="bg-green-900/20 rounded-2xl p-6 border border-green-800/30"><div class="text-center">
-
-  <i class="fas fa-question-circle text-4xl text-green-400 mb-4"></i>
-
-  <h2 class="text-xl font-bold text-white mb-2">Need More Help?</h2>
-
-  <p class="text-gray-400 mb-6">Can't find what you're looking for? We're here to help!</p>
-
-  
-
-  <div class="flex flex-wrap justify-center gap-4">
-
-    <a href="mailto:stcrijohstudio@gmail.com" 
-
-       class="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-medium py-3 px-6 rounded-lg transition flex items-center">
-
-      <i class="fas fa-envelope mr-2"></i> Email Support
-
-    </a>
-
-    <a href="about.html" 
-
-       class="bg-gray-800 hover:bg-gray-700 text-white font-medium py-3 px-6 rounded-lg transition flex items-center">
-
-      <i class="fas fa-info-circle mr-2"></i> Visit About Page
-
-    </a>
-
-  </div>
-
-</div>
-
-  </div></main><script>
-  
-
-  
 // Menu toggle function - updated to handle scroll closing
-  
 function toggleMenu() {
-  
   const menuPanel = document.getElementById('menuPanel');
-  
   menuPanel.classList.toggle('hidden');
   
-  
-  
   // If opening the menu, add scroll listener
-  
   if (!menuPanel.classList.contains('hidden')) {
-  
     window.addEventListener('scroll', closeMenuOnScroll);
-  
   } else {
-  
     window.removeEventListener('scroll', closeMenuOnScroll);
-  
   }
-  
 }
-  
 
-  
 // Close menu when scrolling
-  
 function closeMenuOnScroll() {
-  
   const menuPanel = document.getElementById('menuPanel');
-  
   if (!menuPanel.classList.contains('hidden')) {
-  
     menuPanel.classList.add('hidden');
-  
     window.removeEventListener('scroll', closeMenuOnScroll);
-  
   }
-  
 }
-  
 
-  
 // Close menu when clicking outside - updated
-  
 document.addEventListener('click', function(event) {
-  
   const menuPanel = document.getElementById('menuPanel');
-  
   const menuButton = document.querySelector('button[onclick="toggleMenu()"]');
   
-  
-  
   if (!menuPanel.classList.contains('hidden') && 
-  
       !menuPanel.contains(event.target) && 
-  
       !menuButton.contains(event.target)) {
-  
     menuPanel.classList.add('hidden');
-  
     window.removeEventListener('scroll', closeMenuOnScroll);
-  
   }
-  
 });
-  
 
-  
 // Close menu when pressing Escape key - updated
-  
 document.addEventListener('keydown', function(event) {
-  
   if (event.key === 'Escape') {
-  
     const menuPanel = document.getElementById('menuPanel');
-  
     if (!menuPanel.classList.contains('hidden')) {
-  
       menuPanel.classList.add('hidden');
-  
       window.removeEventListener('scroll', closeMenuOnScroll);
-  
     }
-  
   }
-  
 });
-  
 
-  
 // Also close menu when clicking on any menu link
-  
 document.querySelectorAll('#menuPanel a').forEach(link => {
-  
   link.addEventListener('click', function() {
-  
     const menuPanel = document.getElementById('menuPanel');
-  
     menuPanel.classList.add('hidden');
-  
     window.removeEventListener('scroll', closeMenuOnScroll);
-  
   });
-  
 });
-  
 
-  
   // Initialize tutorials from localStorage or set defaults
-  
   let tutorials = JSON.parse(localStorage.getItem('bigtree_tutorials')) || {
-  
     'getting-started': [
-  
       'Open the BigTree Shopping Cart app in your browser',
-  
       'Explore the main dashboard and familiar items',
-  
       'Learn basic navigation using the menu button',
-  
       'Set up your first shopping list'
-  
     ],
-  
     'grocery-list': [
-  
       'Click "Grocery List" in the menu',
-  
       'Add items by typing name and selecting category',
-  
       'Use quick-add buttons for common items',
-  
       'Organize items by food, clothes, or other categories'
-  
     ],
-  
     'voice-input': [
-  
       'Look for the microphone icon',
-  
       'Click and hold to start recording',
-  
       'Speak clearly: "Add milk to food category"',
-  
       'Review and confirm the transcribed item'
-  
     ],
-  
     'shopping-cart': [
-  
       'Add items with prices to your cart',
-  
       'View running total as you add items',
-  
       'Apply discounts or promotions',
-  
       'Calculate tax and final total'
-  
     ],
-  
     'printing': [
-  
       'Complete your grocery list',
-  
       'Click "Print PDF" button',
-  
       'Preview and adjust print settings',
-  
       'Save as PDF or print directly'
-  
     ],
-  
     'advanced': [
-  
       'Create custom item presets',
-  
       'Import/export lists from other apps',
-  
       'Use keyboard shortcuts',
-  
       'Set up recurring shopping lists'
-  
     ]
-  
   };
-  
 
-  
   // Track which modules are expanded
-  
   let expandedModules = {};
-  
 
-  
   // Function to toggle module content
-  
   function toggleModule(moduleId) {
-  
     const content = document.getElementById(`${moduleId}-content`);
-  
     const button = content.nextElementSibling;
-  
     
-  
     if (expandedModules[moduleId]) {
-  
       content.classList.remove('module-expanded');
-  
       content.classList.add('module-collapsed');
-  
       button.innerHTML = '<i class="fas fa-book-open mr-2"></i><span>View Tutorial</span>';
-  
     } else {
-  
       content.classList.remove('module-collapsed');
-  
       content.classList.add('module-expanded');
-  
       button.innerHTML = '<i class="fas fa-times mr-2"></i><span>Close Tutorial</span>';
-  
     }
-  
     
-  
     expandedModules[moduleId] = !expandedModules[moduleId];
-  
   }
-  
 
-  
   // Function to toggle admin section
-  
   function toggleAdminSection() {
-  
     const form = document.getElementById('uploadForm');
-  
     const adminSection = document.getElementById('adminSection');
-  
     
-  
     if (form.style.display === 'none') {
-  
       form.style.display = 'block';
-  
       adminSection.classList.add('border-green-500');
-  
     } else {
-  
       form.style.display = 'none';
-  
       adminSection.classList.remove('border-green-500');
-  
     }
-  
   }
-  
 
-  
   // Function to upload new tutorial
-  
   function uploadTutorial() {
-  
     const title = document.getElementById('tutorialTitle').value;
-  
     const module = document.getElementById('tutorialModule').value;
-  
     const content = document.getElementById('tutorialContent').value;
-  
     const videoUrl = document.getElementById('tutorialVideoUrl').value;
-  
     
-  
     if (!title || !content) {
-  
       alert('Please fill in both title and content fields');
-  
       return;
-  
     }
-  
     
-  
     // Parse content into steps
-  
     const steps = content.split('\n').filter(step => step.trim() !== '');
-  
     
-  
     // Add to tutorials object
-  
     if (!tutorials[module]) {
-  
       tutorials[module] = [];
-  
     }
-  
     
-  
     // Add new tutorial (in a real app, you'd add to an array of tutorials per module)
-  
     // For simplicity, we'll replace the existing tutorial for that module
-  
     tutorials[module] = steps;
-  
     
-  
     // Save to localStorage
-  
     localStorage.setItem('bigtree_tutorials', JSON.stringify(tutorials));
-  
     
-  
     // Update the displayed content
-  
     updateModuleContent(module, steps);
-  
     
-  
     // Show success message
-  
     showNotification(`Tutorial uploaded successfully to ${module.replace('-', ' ')} module!`);
-  
     
-  
     // Clear form
-  
     clearForm();
-  
   }
-  
 
-  
   // Function to update module content display
-  
   function updateModuleContent(moduleId, steps) {
-  
     const contentDiv = document.getElementById(`${moduleId}-content`);
-  
     if (contentDiv) {
-  
       let html = '<div class="space-y-4 pt-4 border-t border-gray-700">';
-  
       steps.forEach((step, index) => {
-  
         html += `<div class="tutorial-step text-gray-300">${step}</div>`;
-  
       });
-  
       html += '</div>';
-  
       contentDiv.innerHTML = html;
-  
     }
-  
   }
-  
 
-  
   // Function to clear the form
-  
   function clearForm() {
-  
     document.getElementById('tutorialTitle').value = '';
-  
     document.getElementById('tutorialContent').value = '';
-  
     document.getElementById('tutorialVideoUrl').value = '';
-  
   }
-  
 
-  
   // Function to show notification
-  
   function showNotification(message) {
-  
     const notification = document.createElement('div');
-  
     notification.className = 'fixed bottom-4 right-4 bg-green-600 text-white px-4 py-3 rounded-lg shadow-lg z-50';
-  
     notification.style.animation = 'fadeIn 0.3s ease';
-  
     notification.textContent = message;
-  
     
-  
     document.body.appendChild(notification);
-  
     
-  
     setTimeout(() => {
-  
       notification.style.opacity = '0';
-  
       notification.style.transition = 'opacity 0.3s';
-  
       setTimeout(() => notification.remove(), 300);
-  
     }, 3000);
-  
   }
-  
 
-  
   // Menu toggle function
-  
   function toggleMenu() {
-  
     const menuPanel = document.getElementById('menuPanel');
-  
     menuPanel.classList.toggle('hidden');
-  
   }
-  
 
-  
   // Close menu when clicking outside
-  
   document.addEventListener('click', function(event) {
-  
     const menuPanel = document.getElementById('menuPanel');
-  
     const menuButton = document.querySelector('button[onclick="toggleMenu()"]');
-  
     
-  
     if (!menuPanel.classList.contains('hidden') && 
-  
         !menuPanel.contains(event.target) && 
-  
         !menuButton.contains(event.target)) {
-  
       menuPanel.classList.add('hidden');
-  
     }
-  
   });
-  
 
-  
   // Initialize the page
-  
   document.addEventListener('DOMContentLoaded', function() {
-  
     // Set up counter for tutorial steps
-  
     document.querySelectorAll('.tutorial-step').forEach(step => {
-  
       step.parentElement.style.counterReset = 'step';
-  
     });
-  
     
-  
     // Initialize all module contents from tutorials object
-  
     Object.keys(tutorials).forEach(moduleId => {
-  
       updateModuleContent(moduleId, tutorials[moduleId]);
-  
     });
-  
   });
-  
 </script>
+
 </body>
 </html>
