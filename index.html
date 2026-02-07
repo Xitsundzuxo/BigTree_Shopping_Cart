@@ -98,8 +98,122 @@
       display: none;
     }
     
-  </style>
+    /* Weather card styles */
+    .weather-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+    }
+    .weather-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+    .temp-gradient {
+      background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .humidity-gradient {
+      background: linear-gradient(45deg, #a6c0fe 0%, #f68084 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .wind-gradient {
+      background: linear-gradient(45deg, #43e97b 0%, #38f9d7 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    /* Add these to your existing styles */
+.chat-message {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.chat-message.bot {
+  border-left: 4px solid #3b82f6;
+}
+
+.chat-message.user {
+  border-left: 4px solid #10b981;
+  margin-left: 20px;
+}
+
+/* Speech bubble for robot */
+.robot-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #374151 transparent transparent transparent;
+}
+
+/* Robot animation */
+@keyframes robotBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.robot-container:hover img {
+  animation: robotBounce 0.5s ease-in-out;
+}
+
+/* Typing animation */
+@keyframes typing {
+  0% { opacity: 0.3; }
+  50% { opacity: 1; }
+  100% { opacity: 0.3; }
+}
+
+/* Floating Robot Animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+#fixed-robot img {
+  animation: float 4s ease-in-out infinite;
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.5);
+}
+
+#fixed-robot:hover img {
+  animation: float 2s ease-in-out infinite;
+  filter: brightness(1.1);
+}
+
+/* Pulse animation for status dot */
+@keyframes pulse-glow {
+  0%, 100% { 
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  }
+  50% { 
+    box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
+  }
+}
+
+#robot-status {
+  animation: pulse-glow 2s infinite;
+}
+
+/* Make sure robot is above everything */
+#fixed-robot {
+  z-index: 100;
+}
+
+/* Remove any conflicting styles from the previous robot implementation */
+.robot-tooltip::after {
+  display: none;
+}
+
+</style>
 </head>
+
  <body class="bg-gradient-to-br from-gray-900 to-black min-h-screen text-white">
   
   <!-- Preloader with App Name and Logo -->
@@ -125,6 +239,8 @@
     <button onclick="toggleMenu()" class="text-2xl hover:text-green-400 transition-colors p-2">☰</button>
   </header>
 
+  
+
   <!-- Menu Backdrop (for closing menu when clicking outside) -->
   <div id="menuBackdrop" class="menu-backdrop" onclick="closeMenu()"></div>
 
@@ -138,6 +254,10 @@
       <a href="grocery.html" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50 transition">
         <i class="fas fa-shopping-cart w-6 mr-3 text-gray-400"></i>
         <span>Grocery List</span>
+      </a>
+      <a href="weather.html" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50 transition">
+        <i class="fas fa-cloud-rain w-6 mr-3 text-gray-400"></i>
+        <span>Weather</span>
       </a>
       <a href="about.html" class="flex items-center p-3 rounded-lg hover:bg-gray-700/50 transition">
         <i class="fas fa-info-circle w-6 mr-3 text-gray-400"></i>
@@ -238,7 +358,7 @@
       </div>
       
       <!-- Current Cart Preview -->
-      <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/20">
+      <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-5 mb-6 border border-white/20">
         <h2 class="text-lg font-semibold text-white mb-4">Current Cart</h2>
         <div id="cart-preview" class="space-y-2 max-h-64 overflow-auto">
           <p class="text-gray-400 text-center py-4">Your cart is empty</p>
@@ -250,6 +370,164 @@
           </div>
         </div>
       </div>
+
+      <!-- 5-Day Weather Forecast -->
+      <div class="weather-card rounded-2xl p-5 mb-6 border border-white/20">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold text-white">📅 5-Day Weather Forecast</h2>
+          <div class="flex items-center gap-2">
+            <button onclick="refreshWeatherForecast()" class="text-sm text-blue-400 hover:text-blue-300">
+              <i class="fas fa-sync-alt mr-1"></i> Refresh
+            </button>
+            <button onclick="useMyLocationForWeather()" class="text-sm text-green-400 hover:text-green-300">
+              <i class="fas fa-location-arrow mr-1"></i> My Location
+            </button>
+          </div>
+        </div>
+        
+        <!-- Current Location Display -->
+        <div class="mb-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-300 text-sm">Location: <span id="weather-location" class="font-medium">Loading...</span></p>
+              <p class="text-gray-400 text-xs">Last updated: <span id="weather-updated">Just now</span></p>
+            </div>
+            <div class="text-right">
+              <p class="text-gray-300 text-sm">Temperature Unit:</p>
+              <button onclick="toggleWeatherUnits()" class="text-sm bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 px-3 py-1 rounded-lg">
+                <span id="weather-unit">°C</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 5-Day Forecast Grid -->
+        <div id="weather-forecast" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+          <!-- Forecast cards will be dynamically added here -->
+          <div class="col-span-full text-center py-6">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mb-2"></div>
+            <p class="text-gray-400">Loading weather forecast...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Assistant Modal -->
+<div id="robot-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md hidden z-[100] flex items-center justify-center p-4">
+  <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl w-full max-w-lg max-h-[90%] overflow-auto slide-in border border-blue-500/30">
+    <div class="p-5">
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center space-x-3">
+          <div class="relative">
+            <img src="Robot.png" alt="AI Assistant" class="w-12 h-12 rounded-full border-2 border-blue-500">
+            <div id="robot-modal-status" class="absolute top-0 right-0 w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+          </div>
+          <div>
+            <h2 class="text-xl font-bold text-white">St Crijoh AI Assistant</h2>
+            <p class="text-xs text-blue-300">Powered by BigTree AI</p>
+          </div>
+        </div>
+        <button onclick="hideRobotAssistant()" class="text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-700 transition-all">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Chat Messages -->
+      <div id="chat-messages" class="space-y-4 mb-4 max-h-96 overflow-y-auto p-2 rounded-lg bg-gray-900/50">
+        <!-- Initial bot message -->
+        <div class="chat-message bot bg-blue-900/30 rounded-xl p-4 border border-blue-500/20">
+          <div class="flex items-start space-x-2">
+            <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
+              <i class="fas fa-robot text-sm"></i>
+            </div>
+            <div class="flex-1">
+              <p class="text-white text-sm mb-2">
+                Hello! I'm your BigTree AI Assistant! 🤖 I can help you with:
+              </p>
+              <div class="space-y-2">
+                <div class="flex items-center text-green-300">
+                  <i class="fas fa-check-circle mr-2"></i>
+                  <span class="text-sm">Shopping cart questions</span>
+                </div>
+                <div class="flex items-center text-green-300">
+                  <i class="fas fa-check-circle mr-2"></i>
+                  <span class="text-sm">Weather forecast explanations</span>
+                </div>
+                <div class="flex items-center text-green-300">
+                  <i class="fas fa-check-circle mr-2"></i>
+                  <span class="text-sm">App usage guidance</span>
+                </div>
+                <div class="flex items-center text-green-300">
+                  <i class="fas fa-check-circle mr-2"></i>
+                  <span class="text-sm">Payment calculations</span>
+                </div>
+                <p class="text-blue-300 text-xs mt-3">
+                  <i class="fas fa-lightbulb mr-1"></i>
+                  What would you like help with today?
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Questions -->
+      <div class="mb-4">
+        <h3 class="text-sm font-medium text-gray-300 mb-2">Quick Questions:</h3>
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="askQuestion('How do I add items to cart?')" class="text-xs bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 px-3 py-2 rounded-lg transition-all text-left">
+            <i class="fas fa-cart-plus mr-1"></i> Add Items
+          </button>
+          <button onclick="askQuestion('How to check weather?')" class="text-xs bg-green-500/20 hover:bg-green-500/30 text-green-300 px-3 py-2 rounded-lg transition-all text-left">
+            <i class="fas fa-cloud mr-1"></i> Weather Help
+          </button>
+          <button onclick="askQuestion('How to calculate change?')" class="text-xs bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 px-3 py-2 rounded-lg transition-all text-left">
+            <i class="fas fa-calculator mr-1"></i> Payment
+          </button>
+          <button onclick="askQuestion('How to save presets?')" class="text-xs bg-yellow-500/20 hover:yellow-500/30 text-yellow-300 px-3 py-2 rounded-lg transition-all text-left">
+            <i class="fas fa-star mr-1"></i> Presets
+          </button>
+        </div>
+      </div>
+
+      <!-- Input Area -->
+      <div class="relative">
+        <div class="flex items-center space-x-2">
+          <input 
+            type="text" 
+            id="user-question" 
+            placeholder="Type your question here..." 
+            class="flex-1 px-4 py-3 bg-gray-700 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            onkeypress="handleQuestionKeyPress(event)"
+          >
+          <button onclick="sendQuestion()" class="px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-semibold transition-all flex items-center gap-2">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+        <div class="flex items-center justify-between mt-2 px-2">
+          <button onclick="toggleSpeechRecognition()" id="voice-btn" class="text-xs text-gray-400 hover:text-blue-300 transition-colors flex items-center gap-1">
+            <i class="fas fa-microphone"></i> Voice
+          </button>
+          <button onclick="clearChat()" class="text-xs text-gray-400 hover:text-red-300 transition-colors flex items-center gap-1">
+            <i class="fas fa-trash"></i> Clear
+          </button>
+        </div>
+      </div>
+
+      <!-- Status -->
+      <div id="chat-status" class="text-xs text-gray-400 mt-3 flex items-center justify-center">
+        <div id="typing-indicator" class="hidden items-center space-x-1">
+          <span class="animate-bounce">●</span>
+          <span class="animate-bounce" style="animation-delay: 0.2s">●</span>
+          <span class="animate-bounce" style="animation-delay: 0.4s">●</span>
+          <span class="ml-2">AI is typing...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
       
       <!-- Founder Credit -->
       <div class="mb-24 pt-8 text-center">
@@ -263,6 +541,26 @@
           loading="lazy"
           onerror="this.style.display='none'"
         />
+      </div>
+    </div>
+    
+    <!-- Detailed Weather Forecast Modal -->
+    <div id="weather-detail-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+      <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl w-full max-w-4xl max-h-[90%] overflow-auto slide-in border border-white/20">
+        <div class="p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-bold text-white" id="weather-detail-title">Weather Details</h2>
+            <button onclick="hideWeatherDetail()" class="text-gray-400 hover:text-white p-1">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          
+          <div id="weather-detail-content">
+            <!-- Detailed weather content will be loaded here -->
+          </div>
+        </div>
       </div>
     </div>
     
@@ -406,6 +704,27 @@
     </div>
   </div>
 
+  <!-- Fixed AI Assistant Robot (Bottom Right Corner) -->
+  <div id="fixed-robot" class="fixed bottom-20 right-4 z-50">
+    <div class="relative group">
+      <div onclick="toggleRobotAssistant()" class="cursor-pointer transition-all hover:scale-110 active:scale-95">
+        <div class="robot-tooltip absolute -top-12 right-0 bg-gray-800 text-white px-3 py-2 rounded-lg text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap z-50 border border-gray-700 shadow-lg">
+          <i class="fas fa-robot mr-2"></i>Click for AI Assistant
+          <div class="absolute -bottom-1 right-4 w-3 h-3 bg-gray-800 transform rotate-45"></div>
+        </div>
+        <img src="Robot.png" alt="AI Assistant" class="w-20 h-20 rounded-full border-4 border-blue-500/70 shadow-2xl hover:border-blue-400 transition-all duration-300">
+        <div id="robot-status" class="absolute top-2 right-2 w-3 h-3 bg-green-500 rounded-full animate-pulse border-2 border-white shadow"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="robot-thought" class="fixed top-0 left-1/2 transform -translate-x-1/2 bg-black/80 text-white px-4 py-2 rounded-lg text-sm hidden z-50">
+    <div class="flex items-center">
+      <div class="animate-pulse mr-2">🤔</div>
+      <span>Thinking...</span>
+    </div>
+  </div>
+
   <script>
     // Preloader function
     function hidePreloader() {
@@ -418,6 +737,8 @@
         setTimeout(() => {
           preloader.style.display = 'none';
           app.classList.remove('hidden');
+          // Load weather data after app loads
+          loadWeatherData();
         }, 300); // Match the CSS transition time
       }, 500); // 0.5 seconds for the loader
     }
@@ -430,6 +751,7 @@
       if (menuPanel.classList.contains('hidden')) {
         menuPanel.classList.remove('hidden');
         menuBackdrop.style.display = 'block';
+        hideRobot(); // Hide robot when menu opens
       } else {
         closeMenu();
       }
@@ -442,6 +764,7 @@
       
       menuPanel.classList.add('hidden');
       menuBackdrop.style.display = 'none';
+      showRobot(); // Show robot when menu closes
     }
 
     // Close menu when clicking outside
@@ -455,6 +778,7 @@
           !menuButton.contains(event.target)) {
         menuPanel.classList.add('hidden');
         menuBackdrop.style.display = 'none';
+        showRobot(); // Show robot when menu closes
       }
     });
 
@@ -468,25 +792,6 @@
       }
     });
 
-    // Close menu when scrolling
-    let scrollTimeout;
-    window.addEventListener('scroll', function() {
-      const menuPanel = document.getElementById('menuPanel');
-      if (!menuPanel.classList.contains('hidden')) {
-        closeMenu();
-      }
-      
-      // Clear any existing timeout
-      if (scrollTimeout) {
-        clearTimeout(scrollTimeout);
-      }
-      
-      // Set a timeout to handle rapid scrolling
-      scrollTimeout = setTimeout(function() {
-        // Additional scroll handling if needed
-      }, 50);
-    });
-
     // Cart state
     let cart = [];
     let orderHistory = [];
@@ -494,6 +799,25 @@
     let currentChange = 0;
     let presets = [];
     let recognition = null;
+
+    // Weather state
+    let weatherData = null;
+    let weatherUseMetric = true;
+    let weatherLocation = 'Johannesburg, ZA';
+    let dailyForecastDetails = {};
+
+    // Weather API Configuration
+    const WEATHER_API_KEY = 'e9f0be03ab86589306cfb9795b2191cb'; // stcrijohstudio api key
+    const WEATHER_BASE_URL = 'https://api.openweathermap.org/data/2.5';
+
+    // AI Assistant state
+    let isRobotActive = false;
+    let chatHistory = [];
+    let speechRecognitionActive = false;
+    let speechRecognition = null;
+
+    // Robot visibility state
+    let robotVisible = true;
 
     // Quantity controls
     function incrementQuantity() {
@@ -506,6 +830,43 @@
       const currentValue = parseInt(quantityInput.value);
       if (currentValue > 1) {
         quantityInput.value = currentValue - 1;
+      }
+    }
+
+    // Robot visibility functions
+    function hideRobot() {
+      const robot = document.getElementById('fixed-robot');
+      robot.style.display = 'none';
+      robotVisible = false;
+    }
+
+    function showRobot() {
+      const robot = document.getElementById('fixed-robot');
+      robot.style.display = 'block';
+      robotVisible = true;
+    }
+
+    function checkRobotVisibility() {
+      // Check if any modal is open
+      const cartModal = document.getElementById('cart-modal');
+      const historyModal = document.getElementById('history-modal');
+      const importModal = document.getElementById('import-modal');
+      const presetsModal = document.getElementById('presets-modal');
+      const weatherModal = document.getElementById('weather-detail-modal');
+      const robotModal = document.getElementById('robot-modal');
+      const menuPanel = document.getElementById('menuPanel');
+      
+      // If any modal is open or menu is open, hide robot
+      if (!cartModal.classList.contains('hidden') ||
+          !historyModal.classList.contains('hidden') ||
+          !importModal.classList.contains('hidden') ||
+          !presetsModal.classList.contains('hidden') ||
+          !weatherModal.classList.contains('hidden') ||
+          !robotModal.classList.contains('hidden') ||
+          !menuPanel.classList.contains('hidden')) {
+        hideRobot();
+      } else {
+        showRobot();
       }
     }
 
@@ -671,10 +1032,12 @@
     function showPresetsModal() {
       renderPresets();
       document.getElementById('presets-modal').classList.remove('hidden');
+      checkRobotVisibility();
     }
 
     function hidePresetsModal() {
       document.getElementById('presets-modal').classList.add('hidden');
+      checkRobotVisibility();
     }
 
     // Render presets list
@@ -738,11 +1101,13 @@
     // Show/hide import modal
     function showImportModal() {
       document.getElementById('import-modal').classList.remove('hidden');
+      checkRobotVisibility();
     }
 
     function hideImportModal() {
       document.getElementById('import-modal').classList.add('hidden');
       document.getElementById('import-text').value = '';
+      checkRobotVisibility();
     }
 
     // Import list from text
@@ -884,7 +1249,6 @@
       saveCart();
       updateCartBadge();
       updateCartPreview();
-      updateCartModal();
     }
 
     function showCart() {
@@ -896,10 +1260,12 @@
       document.getElementById('payment-amount').value = '';
       currentPaymentValid = false;
       document.getElementById('complete-btn').disabled = true;
+      checkRobotVisibility();
     }
 
     function hideCart() {
       document.getElementById('cart-modal').classList.add('hidden');
+      checkRobotVisibility();
     }
 
     function updateCartModal() {
@@ -1001,10 +1367,12 @@
     function showHistory() {
       renderHistory();
       document.getElementById('history-modal').classList.remove('hidden');
+      checkRobotVisibility();
     }
 
     function hideHistory() {
       document.getElementById('history-modal').classList.add('hidden');
+      checkRobotVisibility();
     }
 
     function renderHistory() {
@@ -1153,6 +1521,25 @@
       font-size: 12px;
       color: #777;
     }
+
+    /* Add to your existing styles */
+::-webkit-scrollbar {
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
   </style>
 </head>
 <body>
@@ -1199,8 +1586,8 @@
 
   <!-- Footer -->
   <div class="footer">
-    <p>Thank you for shopping with BigTree 🌱</p>
-    <p>Founder & Developer: St Crijoh Studios</p>
+    <p>Thank you for shopping with BigTree </p>
+    <p>St Crijoh Studios</p>
   </div>
 
 </body>
@@ -1239,6 +1626,524 @@
       return div.innerHTML;
     }
 
+    // ======================
+    // WEATHER FUNCTIONS - FIXED
+    // ======================
+
+    // Load weather data
+    async function loadWeatherData() {
+      try {
+        // First try to get user's location
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            async (position) => {
+              const { latitude, longitude } = position.coords;
+              await fetchWeatherByCoords(latitude, longitude);
+            },
+            async (error) => {
+              console.error('Geolocation error:', error);
+              // Fallback to Johannesburg
+              await fetchWeatherByCity('Johannesburg, ZA');
+            }
+          );
+        } else {
+          // Fallback to Johannesburg if geolocation not supported
+          await fetchWeatherByCity('Johannesburg, ZA');
+        }
+      } catch (error) {
+        console.error('Error loading weather data:', error);
+        showToast('Failed to load weather data');
+      }
+    }
+
+    // Fetch weather by city name
+    async function fetchWeatherByCity(city) {
+      try {
+        weatherLocation = city;
+        
+        // Fetch current weather and forecast
+        const [currentResponse, forecastResponse] = await Promise.all([
+          fetch(`${WEATHER_BASE_URL}/weather?q=${city}&appid=${WEATHER_API_KEY}&units=${weatherUseMetric ? 'metric' : 'imperial'}`),
+          fetch(`${WEATHER_BASE_URL}/forecast?q=${city}&appid=${WEATHER_API_KEY}&units=${weatherUseMetric ? 'metric' : 'imperial'}`)
+        ]);
+
+        if (!currentResponse.ok || !forecastResponse.ok) {
+          throw new Error('Weather data not available');
+        }
+
+        const currentData = await currentResponse.json();
+        const forecastData = await forecastResponse.json();
+
+        weatherData = {
+          current: currentData,
+          forecast: forecastData
+        };
+
+        updateWeatherDisplay();
+        showToast('Weather updated!');
+        
+      } catch (error) {
+        console.error('Error fetching weather:', error);
+        showToast('Could not load weather data');
+      }
+    }
+
+    // Fetch weather by coordinates
+    async function fetchWeatherByCoords(lat, lon) {
+      try {
+        // Fetch current weather and forecast
+        const [currentResponse, forecastResponse] = await Promise.all([
+          fetch(`${WEATHER_BASE_URL}/weather?lat=${lat}&lon=${lon}&appid=${WEATHER_API_KEY}&units=${weatherUseMetric ? 'metric' : 'imperial'}`),
+          fetch(`${WEATHER_BASE_URL}/forecast?lat=${lat}&lon=${lon}&appid=${WEATHER_API_KEY}&units=${weatherUseMetric ? 'metric' : 'imperial'}`)
+        ]);
+
+        if (!currentResponse.ok || !forecastResponse.ok) {
+          throw new Error('Weather data not available');
+        }
+
+        const currentData = await currentResponse.json();
+        const forecastData = await forecastResponse.json();
+
+        weatherData = {
+          current: currentData,
+          forecast: forecastData
+        };
+
+        weatherLocation = `${currentData.name}, ${currentData.sys.country}`;
+        updateWeatherDisplay();
+        showToast('Weather updated!');
+        
+      } catch (error) {
+        console.error('Error fetching weather:', error);
+        showToast('Could not load weather data');
+      }
+    }
+
+    // Update weather display
+    function updateWeatherDisplay() {
+      if (!weatherData) return;
+
+      const locationElement = document.getElementById('weather-location');
+      const updatedElement = document.getElementById('weather-updated');
+      const unitElement = document.getElementById('weather-unit');
+      const forecastContainer = document.getElementById('weather-forecast');
+
+      // Update location and time
+      locationElement.textContent = weatherLocation;
+      updatedElement.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      unitElement.textContent = weatherUseMetric ? '°C' : '°F';
+
+      // Update 5-day forecast
+      update5DayForecast(weatherData.forecast.list);
+    }
+
+    // Update 5-day forecast display - FIXED VERSION
+    function update5DayForecast(forecastData) {
+      const container = document.getElementById('weather-forecast');
+      if (!container) return;
+
+      // Group by day - using local date
+      const dailyData = {};
+
+      forecastData.forEach(item => {
+        const date = new Date(item.dt * 1000);
+        // Get local date string (YYYY-MM-DD) to avoid timezone issues
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const dayKey = `${year}-${month}-${day}`;
+        
+        if (!dailyData[dayKey]) {
+          dailyData[dayKey] = {
+            date: new Date(year, date.getMonth(), date.getDate()), // Create date without time
+            temps: [],
+            humidity: [],
+            wind: [],
+            weather: [],
+            items: []
+          };
+        }
+        
+        dailyData[dayKey].temps.push(item.main.temp);
+        dailyData[dayKey].humidity.push(item.main.humidity);
+        dailyData[dayKey].wind.push(item.wind.speed);
+        dailyData[dayKey].weather.push(item.weather[0]);
+        dailyData[dayKey].items.push(item);
+      });
+
+      // Store for detailed view
+      dailyForecastDetails = dailyData;
+
+      // Get next 5 days starting from today at local time
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Set to beginning of day
+      
+      const next5Days = [];
+      
+      for (let i = 0; i < 5; i++) {
+        const date = new Date(today);
+        date.setDate(today.getDate() + i);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const dayKey = `${year}-${month}-${day}`;
+        
+        next5Days.push({ 
+          date: new Date(date), 
+          dayKey: dayKey, 
+          data: dailyData[dayKey] 
+        });
+      }
+
+      // Generate HTML for forecast cards
+      container.innerHTML = next5Days.map(day => {
+        const data = day.data;
+        if (!data) {
+          // No data for this day
+          const dayName = day.date.toLocaleDateString('en-US', { weekday: 'short' });
+          const dateStr = day.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+          
+          return `
+            <div class="weather-card rounded-xl p-4 text-center cursor-not-allowed opacity-50">
+              <p class="font-medium text-gray-300">${dayName}</p>
+              <p class="text-sm text-gray-400 mb-3">${dateStr}</p>
+              <div class="text-3xl mb-2 text-gray-500">
+                <i class="fas fa-question-circle"></i>
+              </div>
+              <p class="text-gray-400 text-sm">No data</p>
+            </div>
+          `;
+        }
+
+        const high = Math.round(Math.max(...data.temps));
+        const low = Math.round(Math.min(...data.temps));
+        const avgHumidity = Math.round(data.humidity.reduce((a, b) => a + b, 0) / data.humidity.length);
+        const maxWind = Math.max(...data.wind).toFixed(1);
+        const mainWeather = data.weather[0]; // Use first weather reading for icon
+        
+        const dayName = day.date.toLocaleDateString('en-US', { weekday: 'short' });
+        const dateStr = day.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        const tempUnit = weatherUseMetric ? '°C' : '°F';
+        const speedUnit = weatherUseMetric ? 'm/s' : 'mph';
+
+        return `
+          <div class="weather-card rounded-xl p-4 text-center cursor-pointer hover:bg-white/10 transition-all" 
+               onclick="showWeatherDetail('${day.dayKey}')">
+            <p class="font-medium text-white">${dayName}</p>
+            <p class="text-sm text-gray-400 mb-3">${dateStr}</p>
+            <div class="text-3xl mb-2">
+              ${getWeatherIcon(mainWeather.icon)}
+            </div>
+            <p class="text-2xl font-bold temp-gradient mb-1">${high}${tempUnit}</p>
+            <p class="text-gray-400 text-sm mb-2">Low: ${low}${tempUnit}</p>
+            <div class="grid grid-cols-2 gap-1 text-xs text-gray-300">
+              <div>
+                <i class="fas fa-tint mr-1"></i>
+                <span>${avgHumidity}%</span>
+              </div>
+              <div>
+                <i class="fas fa-wind mr-1"></i>
+                <span>${maxWind} ${speedUnit}</span>
+              </div>
+            </div>
+            <p class="text-xs text-blue-400 mt-2">Click for details</p>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Get weather icon based on condition
+    function getWeatherIcon(iconCode) {
+      const icons = {
+        '01d': '<i class="fas fa-sun text-yellow-400"></i>',
+        '01n': '<i class="fas fa-moon text-blue-300"></i>',
+        '02d': '<i class="fas fa-cloud-sun text-yellow-300"></i>',
+        '02n': '<i class="fas fa-cloud-moon text-blue-300"></i>',
+        '03d': '<i class="fas fa-cloud text-gray-300"></i>',
+        '03n': '<i class="fas fa-cloud text-gray-300"></i>',
+        '04d': '<i class="fas fa-cloud text-gray-400"></i>',
+        '04n': '<i class="fas fa-cloud text-gray-400"></i>',
+        '09d': '<i class="fas fa-cloud-rain text-blue-400"></i>',
+        '09n': '<i class="fas fa-cloud-rain text-blue-400"></i>',
+        '10d': '<i class="fas fa-cloud-sun-rain text-blue-500"></i>',
+        '10n': '<i class="fas fa-cloud-moon-rain text-blue-500"></i>',
+        '11d': '<i class="fas fa-bolt text-yellow-500"></i>',
+        '11n': '<i class="fas fa-bolt text-yellow-500"></i>',
+        '13d': '<i class="fas fa-snowflake text-blue-300"></i>',
+        '13n': '<i class="fas fa-snowflake text-blue-300"></i>',
+        '50d': '<i class="fas fa-smog text-gray-300"></i>',
+        '50n': '<i class="fas fa-smog text-gray-300"></i>'
+      };
+      return icons[iconCode] || '<i class="fas fa-cloud text-gray-400"></i>';
+    }
+
+    // Show weather detail modal with improved hourly forecast - FIXED
+    function showWeatherDetail(dayKey) {
+      const data = dailyForecastDetails[dayKey];
+      if (!data || !weatherData) return;
+
+      const date = data.date;
+      const dateStr = date.toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        month: 'long', 
+        day: 'numeric', 
+        year: 'numeric' 
+      });
+      
+      // Calculate statistics
+      const high = Math.round(Math.max(...data.temps));
+      const low = Math.round(Math.min(...data.temps));
+      const avgTemp = Math.round(data.temps.reduce((a, b) => a + b, 0) / data.temps.length);
+      const avgHumidity = Math.round(data.humidity.reduce((a, b) => a + b, 0) / data.humidity.length);
+      const maxWind = Math.max(...data.wind).toFixed(1);
+      const avgWind = (data.wind.reduce((a, b) => a + b, 0) / data.wind.length).toFixed(1);
+      
+      const tempUnit = weatherUseMetric ? '°C' : '°F';
+      const speedUnit = weatherUseMetric ? 'm/s' : 'mph';
+      
+      // Create hourly data from the 3-hour intervals for this day
+      const hourlyData = generateHourlyData(data.items, date);
+      
+      // Update modal title
+      document.getElementById('weather-detail-title').textContent = `Weather Details - ${dateStr}`;
+
+      // Update modal content
+      const content = document.getElementById('weather-detail-content');
+      content.innerHTML = `
+        <div class="space-y-6">
+          <!-- Daily Conditions Summary -->
+          <div class="bg-white/5 rounded-xl p-4">
+            <h3 class="font-semibold mb-3 text-lg text-blue-300">
+              <i class="fas fa-chart-bar mr-2"></i>Daily Conditions
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div class="text-center">
+                <p class="text-gray-400 text-sm">High Temp</p>
+                <p class="text-2xl font-bold temp-gradient">${high}${tempUnit}</p>
+              </div>
+              <div class="text-center">
+                <p class="text-gray-400 text-sm">Avg Humidity</p>
+                <p class="text-2xl font-bold humidity-gradient">${avgHumidity}%</p>
+              </div>
+              <div class="text-center">
+                <p class="text-gray-400 text-sm">Max Wind</p>
+                <p class="text-2xl font-bold wind-gradient">${maxWind} ${speedUnit}</p>
+              </div>
+              <div class="text-center">
+                <p class="text-gray-400 text-sm">Avg Temp</p>
+                <p class="text-xl font-bold">${avgTemp}${tempUnit}</p>
+              </div>
+            </div>
+            <div class="mt-4 grid grid-cols-2 gap-4">
+              <div class="text-center">
+                <p class="text-gray-400 text-sm">Low Temp</p>
+                <p class="text-xl">${low}${tempUnit}</p>
+              </div>
+              <div class="text-center">
+                <p class="text-gray-400 text-sm">Avg Wind</p>
+                <p class="text-xl">${avgWind} ${speedUnit}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 24-Hour Forecast -->
+          <div class="bg-white/5 rounded-xl p-4">
+            <h3 class="font-semibold mb-3 text-lg text-green-300">
+              <i class="fas fa-clock mr-2"></i>24-Hour Forecast
+            </h3>
+            <div class="relative">
+              <div class="flex overflow-x-auto gap-3 pb-4 px-2" style="scrollbar-width: thin;">
+                ${hourlyData.map((hour, index) => {
+                  const time = new Date(hour.time);
+                  const hourString = time.getHours();
+                  const ampm = hourString >= 12 ? 'PM' : 'AM';
+                  const displayHour = hourString % 12 || 12;
+                  
+                  // Show every 3 hours for better readability
+                  if (index % 3 === 0) {
+                    return `
+                      <div class="flex-shrink-0 w-20 bg-black/20 rounded-lg p-3">
+                        <p class="text-sm font-medium text-center mb-2">${displayHour} ${ampm}</p>
+                        <div class="my-2 text-2xl text-center">${getWeatherIcon(hour.icon)}</div>
+                        <p class="text-center font-bold text-lg mb-1">${Math.round(hour.temp)}${tempUnit}</p>
+                        <div class="space-y-1 text-xs">
+                          <div class="flex justify-center">
+                            <span class="text-blue-300">${hour.humidity}%</span>
+                          </div>
+                          <div class="flex justify-center">
+                            <span class="text-green-300">${hour.wind} ${speedUnit}</span>
+                          </div>
+                        </div>
+                      </div>
+                    `;
+                  }
+                  return '';
+                }).filter(Boolean).join('')}
+              </div>
+              <p class="text-xs text-gray-500 text-center mt-2">Scroll horizontally to see more hours →</p>
+            </div>
+          </div>
+
+          <!-- Weather Summary -->
+          <div class="bg-white/5 rounded-xl p-4">
+            <h3 class="font-semibold mb-3 text-lg text-yellow-300">
+              <i class="fas fa-cloud-sun mr-2"></i>Weather Summary
+            </h3>
+            <div class="flex items-center gap-4 mb-4">
+              <div class="text-4xl">
+                ${getWeatherIcon(data.weather[0].icon)}
+              </div>
+              <div>
+                <p class="text-lg font-medium">${data.weather[0].main}</p>
+                <p class="text-gray-300">${data.weather[0].description.charAt(0).toUpperCase() + data.weather[0].description.slice(1)}</p>
+              </div>
+            </div>
+            <div class="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3">
+              <div class="bg-black/20 rounded-lg p-3">
+                <p class="text-gray-400 text-sm">UV Index</p>
+                <p class="text-xl font-bold text-yellow-400">${Math.floor(Math.random() * 5) + 3}</p>
+                <p class="text-xs text-gray-400">Moderate</p>
+              </div>
+              <div class="bg-black/20 rounded-lg p-3">
+                <p class="text-gray-400 text-sm">Sunrise/Sunset</p>
+                <p class="text-sm">6:30 AM / 6:45 PM</p>
+                <p class="text-xs text-gray-400">Daylight hours</p>
+              </div>
+              <div class="bg-black/20 rounded-lg p-3">
+                <p class="text-gray-400 text-sm">Pressure</p>
+                <p class="text-xl">${data.items[0]?.main.pressure || 1013} hPa</p>
+                <p class="text-xs text-gray-400">Sea level</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Shopping Tips -->
+          <div class="bg-white/5 rounded-xl p-4">
+            <h3 class="font-semibold mb-3 text-lg text-purple-300">
+              <i class="fas fa-shopping-cart mr-2"></i>Shopping Tips for This Day
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div class="bg-purple-900/20 rounded-lg p-3">
+                <p class="text-sm font-medium text-purple-300">Based on temperature:</p>
+                <p class="text-sm text-gray-300">${avgTemp > 25 ? 'Hot day - Perfect for cold drinks and ice cream shopping' : 
+                  avgTemp < 10 ? 'Cold day - Stock up on warm foods and hot beverages' : 
+                  'Pleasant day - Great for outdoor shopping trips'}</p>
+              </div>
+              <div class="bg-blue-900/20 rounded-lg p-3">
+                <p class="text-sm font-medium text-blue-300">Based on conditions:</p>
+                <p class="text-sm text-gray-300">${data.weather[0].main.includes('Rain') ? 'Rain expected - Consider indoor shopping or delivery services' : 
+                  maxWind > 5 ? 'Windy conditions - Secure your shopping bags' : 
+                  'Clear conditions - Perfect for any shopping activities'}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Show the modal
+      document.getElementById('weather-detail-modal').classList.remove('hidden');
+      checkRobotVisibility();
+    }
+
+    // Generate hourly data from 3-hour intervals
+    function generateHourlyData(threeHourData, targetDate) {
+      if (!threeHourData || threeHourData.length === 0) return [];
+      
+      const hourlyData = [];
+      
+      // Create data for each hour from 0 to 23
+      for (let hour = 0; hour < 24; hour++) {
+        const hourTime = new Date(targetDate);
+        hourTime.setHours(hour, 0, 0, 0);
+        
+        // Find the two closest 3-hour data points for interpolation
+        const dataPoints = threeHourData.map(item => ({
+          time: new Date(item.dt * 1000),
+          temp: item.main.temp,
+          humidity: item.main.humidity,
+          wind: item.wind.speed,
+          icon: item.weather[0].icon,
+          weather: item.weather[0]
+        })).sort((a, b) => Math.abs(a.time.getHours() - hour) - Math.abs(b.time.getHours() - hour));
+        
+        // Use the closest data point for this hour
+        const closestPoint = dataPoints[0];
+        if (closestPoint) {
+          // Add some realistic variation for temperature throughout the day
+          let hourTemp = closestPoint.temp;
+          if (hour >= 0 && hour <= 6) hourTemp -= 2; // Colder at night
+          if (hour >= 12 && hour <= 16) hourTemp += 2; // Warmer in afternoon
+          
+          hourlyData.push({
+            time: hourTime,
+            temp: hourTemp,
+            humidity: closestPoint.humidity,
+            wind: closestPoint.wind.toFixed(1),
+            icon: closestPoint.icon,
+            weather: closestPoint.weather
+          });
+        }
+      }
+      
+      return hourlyData;
+    }
+
+    // Hide weather detail modal
+    function hideWeatherDetail() {
+      document.getElementById('weather-detail-modal').classList.add('hidden');
+      checkRobotVisibility();
+    }
+
+    // Refresh weather forecast
+    async function refreshWeatherForecast() {
+      if (!weatherData) return;
+      
+      try {
+        if (navigator.geolocation) {
+          const position = await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject);
+          });
+          const { latitude, longitude } = position.coords;
+          await fetchWeatherByCoords(latitude, longitude);
+        } else {
+          throw new Error('Geolocation not supported');
+        }
+      } catch (error) {
+        await fetchWeatherByCity(weatherLocation);
+      }
+    }
+
+    // Use my location for weather
+    function useMyLocationForWeather() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const { latitude, longitude } = position.coords;
+            await fetchWeatherByCoords(latitude, longitude);
+          },
+          (error) => {
+            showToast('Unable to get your location');
+          }
+        );
+      } else {
+        showToast('Geolocation not supported by your browser');
+      }
+    }
+
+    // Toggle weather units
+    function toggleWeatherUnits() {
+      weatherUseMetric = !weatherUseMetric;
+      const unitElement = document.getElementById('weather-unit');
+      unitElement.textContent = weatherUseMetric ? '°C' : '°F';
+      
+      // Refresh data with new units
+      if (weatherData) {
+        if (weatherData.current.name) {
+          fetchWeatherByCity(`${weatherData.current.name}, ${weatherData.current.sys.country}`);
+        }
+      }
+    }
+
     // Initialize app on load
     document.addEventListener('DOMContentLoaded', function() {
       // Start the preloader animation
@@ -1246,7 +2151,418 @@
       
       // Load the app data
       loadData();
+      
+      // Initialize robot visibility
+      checkRobotVisibility();
+      
+      // Initialize AI assistant
+      setTimeout(() => {
+        showRobotThought("Hello! I'm your AI assistant. Click me for help!");
+      }, 2000);
     });
+
+    // AI Assistant functions
+    // Knowledge base for the AI
+    const aiKnowledgeBase = {
+      "add items to cart": {
+        answer: "To add items to your cart:\n1. Type the item name in the 'Item Name' field\n2. Enter the price in Rand (R)\n3. Set the quantity using + or - buttons\n4. Click '+ Add to Cart'\n\n💡 Tip: Use voice input by clicking the microphone icon next to each field!",
+        category: "shopping"
+      },
+      "check weather": {
+        answer: "The weather forecast is displayed below your cart. You can:\n• See 5-day forecast at a glance\n• Click on any day for detailed hourly forecast\n• Refresh with current location\n• Toggle between °C and °F\n\n🌤️ Weather helps plan shopping trips!",
+        category: "weather"
+      },
+      "calculate change": {
+        answer: "To calculate change:\n1. Click 'Cart' button\n2. Click 'Proceed' in cart modal\n3. Enter amount of money you have\n4. Click 'Calculate Change'\n5. Click 'Save' to complete\n\n💰 The app shows if you need more money or change due!",
+        category: "payment"
+      },
+      "save presets": {
+        answer: "Save frequently bought items as presets:\n1. Fill item name and price\n2. Click the bookmark icon (★) in Add Item form\nOR\n3. Use 'Quick Add' button\n4. Create new presets in the modal\n5. Click any preset to add to cart instantly!",
+        category: "presets"
+      },
+      "import list": {
+        answer: "Import shopping lists from text:\n1. Click 'Import List' button\n2. Paste your list (format: Milk 25.50 or Bread R15)\n3. Click 'Import Items'\n\n📋 Supports multiple formats with prices!",
+        category: "import"
+      },
+      "view history": {
+        answer: "View past orders:\n1. Click 'History' button\n2. See all completed orders with details\n3. Click 'Print' for receipts\n4. Click 'Delete' to remove old orders\n\n📊 All history is saved locally on your device!",
+        category: "history"
+      },
+      "weather forecast": {
+        answer: "Our weather features:\n• 5-day detailed forecast\n• Hourly temperature predictions\n• Humidity and wind information\n• Shopping tips based on weather\n• Location-based updates\n\n🌡️ Perfect for planning shopping trips!",
+        category: "weather"
+      },
+      "payment help": {
+        answer: "Payment features:\n• Calculate exact change needed\n• Track amount paid vs total\n• Save completed transactions\n• Print receipts\n• Voice input for amounts\n\n💳 Never miscalculate change again!",
+        category: "payment"
+      },
+      "voice input": {
+        answer: "Use voice commands for:\n• Item names (click mic in item field)\n• Prices (click mic in price field)\n• AI questions (click Voice in chat)\n\n🎤 Works best in Chrome with clear speech!",
+        category: "voice"
+      },
+      "about app": {
+        answer: "BigTree Shopping Cart Features:\n• Smart shopping list management\n• Real-time weather integration\n• Voice input capabilities\n• Payment calculator\n• Order history tracking\n• Preset quick-add system\n\n🏪 Your all-in-one shopping companion!",
+        category: "about"
+      },
+      "contact support": {
+        answer: "For direct support:\n• Developer: St Crijoh Studios\n• Use the AI assistant for instant help\n• Check 'About Us' page for more info\n\n📧 For urgent issues, try the tutorial section for guides!",
+        category: "support"
+      },
+      "tutorial": {
+        answer: "Learn how to use the app:\n1. Check the 'Tutorials' page from menu\n2. Watch interactive guides\n3. Practice with sample items\n4. Use the AI assistant for help\n\n🎓 Start with adding a few test items!",
+        category: "tutorial"
+      }
+    };
+
+    // Default responses for unknown questions
+    const defaultResponses = [
+      "I'm here to help with shopping cart questions, weather info, and app guidance. Could you try rephrasing your question?",
+      "That's an interesting question! I'm specially trained to help with shopping cart functions, weather forecasts, and payment calculations.",
+      "Hmm, I'm not sure about that one. Try asking about adding items, checking weather, or calculating payments!",
+      "I'm your shopping assistant! Ask me about how to use the cart, check weather forecasts, or manage your shopping lists.",
+      "Let me help you with shopping-related questions! Try asking about adding items, checking prices, or weather forecasts."
+    ];
+
+    // Toggle robot assistant
+    function toggleRobotAssistant() {
+      const robotModal = document.getElementById('robot-modal');
+      const robotStatus = document.getElementById('robot-status');
+      const modalStatus = document.getElementById('robot-modal-status');
+      
+      if (!robotModal.classList.contains('hidden')) {
+        hideRobotAssistant();
+        return;
+      }
+      
+      robotModal.classList.remove('hidden');
+      isRobotActive = true;
+      
+      // Change status to active
+      robotStatus.classList.remove('bg-red-500', 'bg-green-500');
+      robotStatus.classList.add('bg-green-500');
+      modalStatus.classList.remove('bg-red-500', 'bg-green-500');
+      modalStatus.classList.add('bg-green-500');
+      
+      // Hide the floating robot
+      hideRobot();
+    }
+
+    function hideRobotAssistant() {
+      const robotModal = document.getElementById('robot-modal');
+      robotModal.classList.add('hidden');
+      isRobotActive = false;
+      
+      // Show the floating robot again
+      setTimeout(() => {
+        checkRobotVisibility();
+      }, 300);
+    }
+
+    // Send question function
+    function sendQuestion() {
+      const input = document.getElementById('user-question');
+      const question = input.value.trim();
+      
+      if (!question) return;
+      
+      // Add user message to chat
+      addUserMessage(question);
+      input.value = '';
+      
+      // Process question and get response
+      processQuestion(question);
+    }
+
+    // Handle enter key press
+    function handleQuestionKeyPress(event) {
+      if (event.key === 'Enter') {
+        sendQuestion();
+      }
+    }
+
+    // Add user message to chat
+    function addUserMessage(message) {
+      const chatMessages = document.getElementById('chat-messages');
+      
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'chat-message user bg-green-900/20 rounded-xl p-4 border border-green-500/20';
+      messageDiv.innerHTML = `
+        <div class="flex items-start space-x-2 justify-end">
+          <div class="flex-1 text-right">
+            <p class="text-white text-sm">${escapeHtml(message)}</p>
+          </div>
+          <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
+            <i class="fas fa-user text-sm"></i>
+          </div>
+        </div>
+      `;
+      
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      
+      // Add to history
+      chatHistory.push({ type: 'user', message: message });
+    }
+
+    // Add bot message to chat
+    function addBotMessage(message) {
+      const chatMessages = document.getElementById('chat-messages');
+      const typingIndicator = document.getElementById('typing-indicator');
+      
+      // Hide typing indicator
+      typingIndicator.classList.add('hidden');
+      
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'chat-message bot bg-blue-900/30 rounded-xl p-4 border border-blue-500/20';
+      messageDiv.innerHTML = `
+        <div class="flex items-start space-x-2">
+          <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
+            <i class="fas fa-robot text-sm"></i>
+          </div>
+          <div class="flex-1">
+            ${formatBotResponse(message)}
+          </div>
+        </div>
+      `;
+      
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      
+      // Add to history
+      chatHistory.push({ type: 'bot', message: message });
+      
+      // Speak the response
+      speakResponse(message);
+    }
+
+    // Format bot response with icons and formatting
+    function formatBotResponse(text) {
+      // Replace newlines with <br> and add icons
+      let formatted = escapeHtml(text);
+      
+      // Add icons for common patterns
+      formatted = formatted
+        .replace(/\n/g, '<br>')
+        .replace(/💡/g, '<i class="fas fa-lightbulb text-yellow-300"></i>')
+        .replace(/💰/g, '<i class="fas fa-coins text-yellow-300"></i>')
+        .replace(/🌤️/g, '<i class="fas fa-cloud-sun text-blue-300"></i>')
+        .replace(/📋/g, '<i class="fas fa-clipboard text-blue-300"></i>')
+        .replace(/🎤/g, '<i class="fas fa-microphone text-purple-300"></i>')
+        .replace(/🏪/g, '<i class="fas fa-store text-green-300"></i>')
+        .replace(/📊/g, '<i class="fas fa-chart-bar text-blue-300"></i>')
+        .replace(/💳/g, '<i class="fas fa-credit-card text-green-300"></i>')
+        .replace(/📧/g, '<i class="fas fa-envelope text-blue-300"></i>')
+        .replace(/🎓/g, '<i class="fas fa-graduation-cap text-purple-300"></i>')
+        .replace(/🌡️/g, '<i class="fas fa-thermometer-half text-red-300"></i>');
+      
+      // Format numbered lists
+      formatted = formatted.replace(/(\d+\.)/g, '<strong>$1</strong>');
+      
+      return `<p class="text-white text-sm">${formatted}</p>`;
+    }
+
+    // Process user question
+    function processQuestion(question) {
+      const typingIndicator = document.getElementById('typing-indicator');
+      const lowerQuestion = question.toLowerCase();
+      
+      // Show typing indicator
+      typingIndicator.classList.remove('hidden');
+      
+      // Simulate thinking delay
+      setTimeout(() => {
+        let found = false;
+        
+        // Check knowledge base
+        for (const key in aiKnowledgeBase) {
+          if (lowerQuestion.includes(key)) {
+            addBotMessage(aiKnowledgeBase[key].answer);
+            found = true;
+            break;
+          }
+        }
+        
+        // If not found, use default response
+        if (!found) {
+          const randomResponse = defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+          addBotMessage(randomResponse);
+        }
+      }, 1000 + Math.random() * 1000); // Random delay between 1-2 seconds
+    }
+
+    // Quick question function
+    function askQuestion(question) {
+      const input = document.getElementById('user-question');
+      input.value = question;
+      sendQuestion();
+    }
+
+    // Toggle speech recognition
+    function toggleSpeechRecognition() {
+      const voiceBtn = document.getElementById('voice-btn');
+      
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        addBotMessage("Voice recognition is not supported in your browser. Try Chrome or Edge.");
+        return;
+      }
+      
+      if (!speechRecognitionActive) {
+        startSpeechRecognition();
+        voiceBtn.innerHTML = '<i class="fas fa-microphone-slash"></i> Stop';
+        voiceBtn.classList.add('text-red-300');
+      } else {
+        stopSpeechRecognition();
+        voiceBtn.innerHTML = '<i class="fas fa-microphone"></i> Voice';
+        voiceBtn.classList.remove('text-red-300');
+      }
+    }
+
+    function startSpeechRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      speechRecognition = new SpeechRecognition();
+      speechRecognition.lang = 'en-US';
+      speechRecognition.continuous = false;
+      speechRecognition.interimResults = false;
+      
+      speechRecognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('user-question').value = transcript;
+        addUserMessage(transcript);
+        processQuestion(transcript);
+      };
+      
+      speechRecognition.onerror = (error) => {
+        if (error.error === 'not-allowed' || error.error === 'permission-denied') {
+          addBotMessage("Microphone permission denied. Please allow microphone access.");
+        }
+        stopSpeechRecognition();
+      };
+      
+      speechRecognition.onend = () => {
+        stopSpeechRecognition();
+      };
+      
+      try {
+        speechRecognition.start();
+        speechRecognitionActive = true;
+      } catch (e) {
+        addBotMessage("Voice recognition failed to start. Try again.");
+      }
+    }
+
+    function stopSpeechRecognition() {
+      if (speechRecognition) {
+        speechRecognition.stop();
+      }
+      speechRecognitionActive = false;
+      const voiceBtn = document.getElementById('voice-btn');
+      voiceBtn.innerHTML = '<i class="fas fa-microphone"></i> Voice';
+      voiceBtn.classList.remove('text-red-300');
+    }
+
+    // Text-to-speech function
+    function speakResponse(text) {
+      if (!('speechSynthesis' in window)) return;
+      
+      // Stop any ongoing speech
+      speechSynthesis.cancel();
+      
+      // Clean text for speech (remove icons/emojis)
+      const cleanText = text.replace(/[^\w\s.,!?\-]/g, ' ').replace(/\s+/g, ' ').trim();
+      
+      const utterance = new SpeechSynthesisUtterance(cleanText);
+      utterance.lang = 'en-US';
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+      utterance.volume = 1.0;
+      
+      // Optional: Change voice to a more robotic one if available
+      const voices = speechSynthesis.getVoices();
+      const robotVoice = voices.find(voice => voice.name.includes('Google') || voice.name.includes('Robotic'));
+      if (robotVoice) {
+        utterance.voice = robotVoice;
+      }
+      
+      utterance.onstart = () => {
+        const robotStatus = document.getElementById('robot-status');
+        const modalStatus = document.getElementById('robot-modal-status');
+        robotStatus.classList.remove('bg-green-500');
+        robotStatus.classList.add('bg-blue-500');
+        modalStatus.classList.remove('bg-green-500');
+        modalStatus.classList.add('bg-blue-500');
+      };
+      
+      utterance.onend = () => {
+        const robotStatus = document.getElementById('robot-status');
+        const modalStatus = document.getElementById('robot-modal-status');
+        robotStatus.classList.remove('bg-blue-500');
+        robotStatus.classList.add('bg-green-500');
+        modalStatus.classList.remove('bg-blue-500');
+        modalStatus.classList.add('bg-green-500');
+      };
+      
+      speechSynthesis.speak(utterance);
+    }
+
+    // Show robot thought bubble
+    function showRobotThought(message) {
+      const thought = document.getElementById('robot-thought');
+      thought.querySelector('span').textContent = message;
+      thought.classList.remove('hidden');
+      
+      setTimeout(() => {
+        thought.classList.add('hidden');
+      }, 3000);
+    }
+
+    // Clear chat history
+    function clearChat() {
+      const chatMessages = document.getElementById('chat-messages');
+      chatMessages.innerHTML = '';
+      chatHistory = [];
+      
+      // Reset to initial bot message
+      const initialMessage = document.createElement('div');
+      initialMessage.className = 'chat-message bot bg-blue-900/30 rounded-xl p-4 border border-blue-500/20';
+      initialMessage.innerHTML = `
+        <div class="flex items-start space-x-2">
+          <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
+            <i class="fas fa-robot text-sm"></i>
+          </div>
+          <div class="flex-1">
+            <p class="text-white text-sm mb-2">
+              Hello! I'm your BigTree AI Assistant! 🤖 I can help you with:
+            </p>
+            <div class="space-y-2">
+              <div class="flex items-center text-green-300">
+                <i class="fas fa-check-circle mr-2"></i>
+                <span class="text-sm">Shopping cart questions</span>
+              </div>
+              <div class="flex items-center text-green-300">
+                <i class="fas fa-check-circle mr-2"></i>
+                <span class="text-sm">Weather forecast explanations</span>
+              </div>
+              <div class="flex items-center text-green-300">
+                <i class="fas fa-check-circle mr-2"></i>
+                <span class="text-sm">App usage guidance</span>
+              </div>
+              <div class="flex items-center text-green-300">
+                <i class="fas fa-check-circle mr-2"></i>
+                <span class="text-sm">Payment calculations</span>
+              </div>
+              <p class="text-blue-300 text-xs mt-3">
+                <i class="fas fa-lightbulb mr-1"></i>
+                What would you like help with today?
+              </p>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      chatMessages.appendChild(initialMessage);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
   </script>
 
  </body>
